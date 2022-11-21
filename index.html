@@ -4,42 +4,747 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Joe, Burrow">
-    <meta name="description" content="literally a picture of Joe Burrow">
-    <title>Document</title>
+    <link rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+    <script src = "https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <title>My Google Map</title>
     <style>
-       em {
-        color: red;
-        font-style: normal;
-       } 
-    </style>
-    <style>img {
-        width: 200px;
-        height:  200px;
-        object-fit: cover;
-    }
-    </style>
-</head> 
+        #map {
+            flex-basis: 0;
+            flex-grow: 4;
+            height: 600px;
+        }
+
+        .container {
+            width: 40%;
+            float: left;
+            margin-left: 1%;
+        }
+
+        #floating-panel {
+            position: absolute;
+            top: 15%;
+            z-index: 5;
+            text-align: center;
+            font-family: "Roboto", "sans-serif";
+            line-height: 30px;
+            padding-left: 10px;
+        }
+
+        .google_map iframe{
+            width:100%;
+        }
+
+        clearfix {
+            clear: both
+        }
+
+        #location-form {
+            margin-left: 2.5%;
+            width: 95%;
+            padding-top: 8px;
+        }
+
+        #clear {
+            color: gray;
+            border-left: none;
+            border-color: lightgray;
+        }
+
+        #directions-panel {
+            position: absolute;
+            top: 50px;
+            left: 2.5%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: "Roboto", "sans-serif";
+            line-height: 30px;
+            padding-left: 10px;
+            float: left;
+        }
+        #container {
+            height: 600px;
+            display: flex;
+        }
+
+        #sidebar {
+            flex-basis: 15rem;
+            flex-grow: 1;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            max-width: 30rem;
+            height: 600px;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+
+        #directions-sidebar {
+            flex-basis: 15rem;
+            flex-grow: 1;
+            padding: 1rem;
+            max-width: 30rem;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+
+        /* Dropdown Button */
+        .dropbtn {
+            background-color: #9f9f9f;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Dropdown button on hover & focus */
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #6f6f6f;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {background-color: #ddd;}
+
+        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+        .show {display:block;}
+        
+    </style> 
+</head>
 <body>
-    <a href="company/about.html">About Joe</a>
-    <a href="images/640px-LSU_Football_at_the_White_House_(49400533066)_(cropped).jpg" download>Photo of Joe</a>
-    <a href="#section-college">Go to College</a>
-    <a href="https://google.com" target="_blank">To Google</a>
-    <a href="mailto:cfenton2129@gmial.com">Email Me</a>
-    <h2>HTML</h2>
-    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam a quidem quod aliquid nisi voluptatum nihil rerum itaque amet ex ipsum nemo nam eius unde temporibus consequuntur, veniam officia minima? Cumque sed inventore suscipit magnam id placeat quia odio dignissimos quam, amet rem consequuntur magni aliquam doloremque odit in natus, asperiores nulla voluptatibus optio! Aliquam tempora quae minima sequi, suscipit vitae facilis facere asperiores reprehenderit dolores odit omnis explicabo unde pariatur quasi quisquam ipsum officiis consectetur. Animi, fugit mollitia expedita corporis maiores deserunt consectetur blanditiis iste similique nemo totam id doloribus autem perspiciatis molestias quas voluptas repellendus? Repellendus, laborum quibusdam in labore accusantium unde modi dolores quos, a optio reprehenderit cumque enim velit praesentium! Rem sapiente provident, neque ipsum eum quos nulla? Ut corrupti ea nulla provident voluptatum natus, nisi quisquam sit nobis voluptas aliquam aperiam tempora. Magni maiores cum nam, numquam obcaecati autem sint officia itaque placeat eum sapiente in vitae temporibus voluptate expedita iste enim similique? Autem tempore ipsa id nemo totam non nihil earum ipsam aliquam, ab a eos qui eum eveniet. Deserunt, molestias nostrum, modi facere repellendus cupiditate explicabo accusamus commodi sequi odit dolorum aliquid consequuntur ducimus sapiente incidunt, quaerat ratione repudiandae corporis corrupti earum ex!</p>
-    <h1>Joe Burrow</h1>
-    <img src="images/screen-shot-2020-04-27-at-10.37.10-am.png" alt="MJ looking at the iPad">
-    <h2>HTML</h2>
-    <h2>Bengals QB</h2>
-    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae error totam obcaecati unde esse adipisci laudantium sapiente nobis omnis praesentium, perferendis quibusdam? Ducimus odio soluta iure. Temporibus aliquid labore deserunt assumenda dicta obcaecati, nobis dolore, voluptatem inventore aspernatur atque exercitationem nulla odio iure, itaque commodi et saepe mollitia modi minus. Dolorem debitis id, consequuntur odit aperiam nobis, quam mollitia nihil asperiores vero velit, laboriosam recusandae sunt natus laborum inventore quibusdam modi cum enim nam exercitationem doloribus? Doloremque, commodi hic vero culpa esse aut deleniti, sed ad, facere soluta corrupti perspiciatis autem blanditiis nam saepe repudiandae aspernatur? Minus consequuntur, nam molestiae ullam itaque animi maiores officia numquam odit. Aspernatur aperiam reprehenderit dolore commodi dolorem nostrum, quas ipsum dolores sapiente, dolor sunt! Modi maxime aspernatur, ad voluptate numquam quod est rem? Provident ullam quisquam illo pariatur itaque ut eveniet cumque aspernatur dolor aut aliquam, blanditiis iste unde! Accusamus neque eaque quod, voluptatum accusantium minima quis doloribus dolorum deserunt corporis molestias dicta expedita iusto ex consectetur error rerum officia dolorem, quam a labore numquam ipsam? Nisi tenetur aspernatur laboriosam non impedit veniam repudiandae quibusdam ducimus maiores minima, ratione, sed nesciunt dolores explicabo amet ea ipsa est doloremque accusamus dignissimos distinctio. Impedit, sint fuga.</p>
-    <p>He's a quarterback for the Cincinnati &lt;Bengals&gt; &copy;</p>
-    <h3>played in the Super Bowl last year</h3>
-    <h3>always rocking an amazing look</h3>
-    <h2 id="section-college">College</h2>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quasi labore, laudantium est reiciendis iusto ea itaque sit tempore exercitationem officiis nostrum rem&nbsp;eveniet, nihil illo vel tempora quam obcaecati ad animi officia molestias autem enim nisi? Quasi porro numquam possimus ea, molestiae expedita sint praesentium explicabo enim labore eveniet.
-    </p>
-   <p>Joe Burrow is the <em>best</em>!</p>
-   <a href="#">Back to Top</a> 
+    <div id = 'location-form' class="input-group mb-3">
+        <input id = 'location-input' type="text" class="form-control" placeholder="Search for a place" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button id='clear' class="btn btn-outline-secondary" type="button">X</button>
+        </div>
+    </div>
+    <div id="container">
+    <div class = 'google_map' id="map"></div>
+    <div id = 'sidebar'>
+        <img id = "place-photos" src="" width = 100%>
+        <button id = 'directions-button' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Get directions</button>
+        <div class = "card-block" id = "place-name"></div>
+        <div class = "card-block" id = "formatted-address"></div>
+        <div class = "card-block" id = "geometry"></div>
+        <div class = "card-block" id = "phone"></div>
+        <div class = "card-block" id = "icon"></div>
+        <div class = "card-block" id = "website"></div>
+    </div>
+    <div id = 'directions-sidebar'>
+        <div class="dropdown">
+            <button onclick = "myFunction()" class="dropbtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Transportation
+            </button>
+            <div id = 'transport-drop' class="dropdown-content" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" id = 'WALKING' href="#" onclick = "setTransport('WALKING')">Walking</a>
+              <a class="dropdown-item" id = 'DRIVING' href="#" onclick = "setTransport('DRIVING')">Driving</a>
+              <a class="dropdown-item" id = 'BICYCLING' href="#" onclick = "setTransport('BICYCLING')">Biking</a>
+              <a class="dropdown-item" id = 'TRANSIT' href="#" onclick = "setTransport('TRANSIT')">Transit</a>
+            </div>
+          </div>
+    </div>
+    </div>
+    <div id="floating-panel">
+        <input id="hide-markers" type="button" value="Hide Markers" />
+        <input id="show-markers" type="button" value="Show Markers" />
+        <input id="delete-markers" type="button" value="Delete Markers" />
+        <input id="food-markers" type="button" value="Food" />
+        <input id="dorm-markers" type="button" value="Dorms" />
+        <input id="study-markers" type="button" value="Study Spaces" />
+        <input id="events-markers" type="button" value="Events" />
+      </div>
+        <iframe src="" frameborder="0"></iframe>
+    </div>
+    <div class="clearfix"></div>
+    <script>
+        /*
+        import {MongoClient} from "mongodb";
+
+        async function main(){
+
+        const uri = "mongodb+srv://admin:emorymaps2022@aws-emorymaps-db.tj1y7al.mongodb.net/?retryWrites=true&w=majority";
+ 
+        const client = new MongoClient(uri);
+ 
+        try {
+        // Connect to the MongoDB cluster
+            await client.connect(); //END COPY
+            await listDatabases(client);
+
+        } catch (e) { 
+            console.error(e);
+        } finally {
+            await client.close();
+        }
+        }
+    main().catch(console.error);
+    //connected to data base
+    async function listDatabases(client){
+        databasesList = await client.db().admin().listDatabases();
+ 
+        console.log("Databases:");
+        databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+    };
+    */
+
+        var map;
+        var markers = [];
+        var directionsRenderer;
+        var directionsService;
+        var stepDisplay;
+        var markerArray = [];
+        var filterPlaces = [];
+        var filterHub = [];
+
+        function addMarker(props) {
+            var marker = new google.maps.Marker({
+                position: props.coords,
+                map: map
+            });
+                
+            //check for custom icon
+            if(props.iconImage) {
+                //set icon image
+                marker.setIcon(props.iconImage);
+            }
+
+            //check content
+            if(props.content) {
+                var infoWindow = new google.maps.InfoWindow({
+                    content: props.content,
+                });
+
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+            
+                });
+            }
+
+            markers.push(marker);
+        }
+
+        function initialize() {
+            initMap();
+            initAutocomplete();
+        }
+
+        function initMap() {
+            //map options
+            var options = {
+                zoom: 16,
+                center:{lat: 33.7971, lng: -84.3222}
+            }
+            //new map
+            map = new google.maps.Map(document.getElementById('map'), options);
+
+            //listen for click on map
+            google.maps.event.addListener(map, 'click', 
+                function(event) {
+                    addMarker({coords:event.latLng});
+            });
+
+            filterPlaces = [
+            {
+              name: 'Atwood Chemistry Center',
+              types: ['food', 'academic building', 'study', 'coffee'],
+              coords: {lat: 33.79169445277475,lng: -84.32627981186319},
+              hours: `Mon-Fri 8:00 a.m. - 3:00 p.m.`
+            },
+
+            {
+              name: 'Cox Hall',
+              types: ['food', 'vending', 'dooley', 'printer', 'study'],
+              coords: {lat: 33.79204205870855, lng: -84.32346306752329},
+              hours: `Mon-Fri 7:30 a.m. - 9:00 p.m.<br> Sat-Sun 11:00 a.m. - 6:00 p.m.`,
+              link: 'https://emoryatlanta.cafebonappetit.com/cafe/cox/'
+            },
+
+            {
+              name: 'Woodruff Residential Center',
+              types: ['dorm', 'id', 'food', 'dooley', 'meal swipes', 'vending'],
+              coords: {lat: 33.7971, lng:-84.3215},
+              hours: `Sun-Th 6:00 p.m. - 1:00 a.m.`,
+              link: 'https://www.raysnewyorkpizza.com/copy-of-emory-university'
+            }
+        ];
+
+        filterHub = [
+            {
+              name: 'Wonderful Wednesday',
+              place: 'Asbury Circle',
+              types: ['Wonderful Wednesday'],
+              coords: {lat: 33.7926, lng: -84.3240},
+              hours: `12:00 p.m. - 2:00 p.m.`,
+              link: 'https://emory.campuslabs.com/engage/event/8149634'
+            },
+
+            {
+              name: 'Giving Gratitude',
+              place: 'Cox Bridge',
+              types: ['TableTalk'],
+              coords: {lat: 33.7924, lng: -84.3232},
+              hours: `4:00 p.m. - 6:00 p.m.`,
+              link: 'https://emory.campuslabs.com/engage/event/8567644'
+            },
+
+            {
+              name: 'EOSA Thanksgiving Potluck',
+              place: 'ESC MPR 5&6',
+              types: ['Emory Orchestral Study Associate'],
+              coords: {lat: 33.7935, lng: -84.3239},
+              hours: `7:00 p.m. - 10:00 p.m.`,
+              link: 'https://emory.campuslabs.com/engage/event/8574357'
+            }
+        ];
+
+             // add event listeners for the buttons
+            document.getElementById("show-markers").addEventListener("click", function() {showMarkers(markers);});
+            document.getElementById("hide-markers").addEventListener("click", function() {hideMarkers(markers);});
+            document.getElementById("delete-markers").addEventListener("click", function () {deleteMarkers(markers);});
+            document.getElementById('food-markers').addEventListener('click', function() {applyFilter('food');});
+            document.getElementById('dorm-markers').addEventListener('click', function() {applyFilter('dorm');});
+            document.getElementById('study-markers').addEventListener('click', function() {applyFilter('study');});
+            document.getElementById('events-markers').addEventListener('click', function() {applyEventsFilter();});
+            document.getElementById('sidebar').hidden = true;
+            document.getElementById('directions-button').hidden = true;
+            document.getElementById('directions-sidebar').hidden = true;
+     
+            infoWindow = new google.maps.InfoWindow();
+
+            const locationButton = document.createElement("button");
+
+            locationButton.textContent = "Go to Current Location";
+            locationButton.classList.add("custom-map-control-button");
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+            locationButton.addEventListener("click", () => {
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                map.setCenter(pos);
+                map.setZoom(19);
+                var currentPosMarker = {
+                    coords:pos,
+                    content: `<strong>Current Location</strong>: (${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)})`,
+                }
+
+                addMarker(currentPosMarker);
+            },
+            () => {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+            }
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            var rendererOptions = {
+                map: map
+            }
+            directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+            directionsRenderer.setPanel(document.getElementById("directions-sidebar"));
+
+            stepDisplay = new google.maps.InfoWindow();
+            
+            var mode = 'WALKING';
+            
+            calculateAndDisplayRoute(
+                directionsRenderer,
+                directionsService,
+                markerArray,
+                stepDisplay,
+                map,
+                mode
+            );
+            /*
+
+            function onChangeHandler() {
+                calculateAndDisplayRoute(
+                    directionsRenderer,
+                    directionsService,
+                    markerArray,
+                    stepDisplay,
+                    map
+                );
+            };
+
+            (start).addEventListener(
+                "change",
+                onChangeHandler
+            );
+            (document.getElementById("end")).addEventListener(
+                "change",
+                onChangeHandler
+            );
+            */
+        }
+
+
+        var locationForm = document.getElementById('location-form');
+        var clearButton = document.getElementById('clear');
+
+        //event listeners
+        locationForm.addEventListener('submit', geocode);
+        locationForm.addEventListener('keydown', initAutocomplete);
+        clearButton.addEventListener('click', function() {
+            document.getElementById('location-input').value='';
+            document.getElementById('sidebar').hidden = true;
+            document.getElementById('directions-button').hidden = true;
+            document.getElementById('directions-sidebar').hidden = true;
+            deleteMarkers(markers);
+            deleteMarkers(markerArray);
+            directionsRenderer.setMap(null);
+        });
+
+        function myFunction() {
+            document.getElementById("transport-drop").classList.toggle("show");
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function geocode(e) {
+            //prevent actual submit
+            e.preventDefault();
+
+            var location = document.getElementById('location-input').value;
+            
+            axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                params: {
+                    address: location,
+                    key: "AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So"
+                }
+            })
+            .then(function(response) {
+                //log full response
+                console.log(response);
+
+                //add marker
+                //addMarker(location.coords);
+
+                //formatted address
+                var formattedAddress = response.data.results[0].formatted_address;
+                var formattedAddressOutput = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Address</strong>: ${formattedAddress}</li>
+                        </ul>
+                `;
+
+                //address components
+                var addressComponents = response.data.results[0].address_components;
+                var addressComponentsOutput = '<ul class = "list-group">';
+
+                addressComponentsOutput += "</ul>"
+
+                //geometry
+                //formatted address
+                var lat = response.data.results[0].geometry.location.lat.toFixed(4);
+                var lng = response.data.results[0].geometry.location.lng.toFixed(4);
+                var geometryOutput = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Coordinates</strong>: (${lat}, ${lng}) </li>
+                        </ul>
+                `;
+            })
+            .catch(function(error){
+                console.log(error);
+            })
+        }
+
+        function reverseGeocode() {
+            e.preventDefault();
+
+            var pos;
+            var address;
+            var coordinates = navigator.geolocation.getCurrentPosition(
+            (position) => {
+                    pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    }
+            });
+
+            let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${pos.lat},${pos.lng}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`;
+            fetch(url)
+
+            .then(response => response.json())
+            .then(data =>  {
+                console.log(data);
+                start = data.results[0].formattedAddress;
+            })
+            .catch(err => console.warn(err.message));
+        }
+
+        var autocomplete;
+            function initAutocomplete() {
+            center = {lat: 33.7971, lng: -84.3222};
+            defaultBounds = {
+                north: center.lat + 0.05,
+                south: center.lat -0.05,
+                east: center.lng + 0.05,
+                west: center.lng - 0.05,
+            };
+            autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('location-input'),
+                {
+                    types: [],
+                    componentRestrictions: {'country': ['US']}, //improves predictions
+                    fields: ['place_id', 'geometry', 'name', 'formatted_phone_number', 'icon', 'photos', 'website', 'formatted_address'],
+                    strictBounds: false,
+                    bounds: defaultBounds,
+                });
+
+            autocomplete.addListener('place_changed', onPlaceChanged);
+
+            function onPlaceChanged() {
+                var place = autocomplete.getPlace();
+
+                if(!place.geometry) {
+                    //did not select a prediction
+                    document.getElementById('location-input').placeholder = 'Search';
+                } else {
+                    //display info about valid place
+                document.getElementById('place-name').innerHTML = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Name</strong>: ${place.name}</li>
+                        </ul>
+                `;
+
+                document.getElementById('formatted-address').innerHTML = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Address</strong>: ${place.formatted_address}</li>
+                        </ul>
+                `;
+
+                document.getElementById('geometry').innerHTML = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Coordinates</strong>: (${place.geometry.location.lat().toFixed(4)}, ${place.geometry.location.lng().toFixed(4)})</li>
+                        </ul>
+                `;
+
+                document.getElementById('phone').innerHTML = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Phone</strong>: ${place.formatted_phone_number}</li>
+                        </ul>
+                `;
+
+                document.getElementById('website').innerHTML = `
+                    <ul class = "list-group">
+                        <li class = "list-group-item"><strong>Website</strong>: <a href = ${place.website}>Click here</a></li>
+                        </ul>
+                `;
+                if (place.photos) {
+
+                var firstPhoto = place.photos[0].getUrl();
+
+                document.getElementById(`place-photos`).src = `${firstPhoto}`;
+                }
+                else {
+                    document.getElementById(`place-photos`).src = `images/Screen Shot 2022-10-08 at 9.16.01 PM.png`; 
+                }
+
+                document.getElementById('sidebar').hidden = false;
+                document.getElementById('directions-button').hidden = false;
+
+                var newMarker = {
+                    coords:place.geometry.location,
+                    content: `${place.name}`
+                }   
+        
+                addMarker(newMarker);
+                map.setCenter( {
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng()
+                });
+                }
+            }
+            
+        }
+
+    function setMapOnAll(map, array) {
+        for (let i = 0; i < array.length; i++) {
+        array[i].setMap(map);
+        }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function hideMarkers(array) {
+        setMapOnAll(null, array);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers(array) {
+        setMapOnAll(map, array);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers(array) {
+        hideMarkers(array);
+        if (array == markers) {
+            markers = [];
+        }
+        else if (array == markerArray) {
+            markerArray = [];
+        }
+    }
+
+    function calculateAndDisplayRoute(
+        directionsRenderer, directionsService, markerArray, stepDisplay, map, mode) 
+    {
+        // First, clear out any existing markerArray
+        // from previous calculations.
+        for (i = 0; i < markerArray.length; i++) {
+            markerArray[i].setMap(null);
+        }
+
+        // Retrieve the start and end locations and create
+        // a DirectionsRequest using WALKING directions.
+        var start = 'emory student center'; //how do we get reverse geocoding to work???
+        var end = document.getElementById('location-input').value;
+        var request = {
+            origin: start,
+            destination: end,
+            travelMode: mode
+        };
+
+        // Route the directions and pass the response to a
+        // function to create markers for each step.
+        directionsService.route(request, function(response, status) {
+            if (status == "OK") {
+                //var warnings = document.getElementById("warnings_panel");
+                //warnings.innerHTML = "" + response.routes[0].warnings + "";
+                directionsRenderer.setDirections(response);
+                showSteps(response);
+            }
+        });
+    }
+
+    function showSteps(directionResult) {
+        // For each step, place a marker, and add the text to the marker's
+        // info window. Also attach the marker to an array so we
+        // can keep track of it and remove it when calculating new
+        // routes.
+         var myRoute = directionResult.routes[0].legs[0];
+
+        for (var i = 0; i < myRoute.steps.length; i++) {
+            var marker = new google.maps.Marker({
+            position: myRoute.steps[i].start_point,
+            map: map
+        });
+        attachInstructionText(marker, myRoute.steps[i].instructions);
+        markerArray[i] = marker;
+        }
+    }
+
+    function attachInstructionText(marker, text) {
+        google.maps.event.addListener(marker, 'click', function() {
+        stepDisplay.setContent(text);
+        stepDisplay.open(map, marker);
+        });
+    }
+
+    document.getElementById('directions-button').addEventListener('click', function () { //why is sidebar hidden??
+        directionsService = new google.maps.DirectionsService();
+            var rendererOptions = {
+                map: map
+            }
+        directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+        directionsRenderer.setPanel(document.getElementById("directions-sidebar"));
+        calculateAndDisplayRoute(directionsRenderer, directionsService, markerArray, stepDisplay, map, 'WALKING');
+        document.getElementById('directions-sidebar').hidden = false;
+        document.getElementById('sidebar').hidden = true;
+        deleteMarkers(markers);
+    });
+
+    function setTransport(mode) {
+            calculateAndDisplayRoute(directionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
+    }
+
+    function applyFilter(filter) {
+        for (let i = 0; i < filterPlaces.length; i++) {
+            let types = filterPlaces[i].types;
+            let j = 0;
+            while (j < types.length && filter != types[j]) {
+                j++;
+            }
+            if (j < types.length) {
+                if (filter == 'food') {
+                    addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
+                    }); 
+                }
+                else {
+                    addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: filterPlaces[i].name
+                    });
+                }
+            }
+        }
+    }
+
+    function applyEventsFilter() { //still need to account if multiple clubs involved
+        for (let i = 0; i < filterHub.length; i++) {
+            addMarker({
+                coords: filterHub[i].coords,
+                content: `<b><font size='4'>${filterHub[i].name}</font></b><br> <b>Who</b><br> ${filterHub[i].types[0]}<br> <b>When</b><br> ${filterHub[i].hours}<br> <b>Where</b><br> ${filterHub[i].place}<br><a href = ${filterHub[i].link}>View on The Hub</a><br>`
+            }); 
+        }
+    }
+    
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So&callback=initialize&v=weekly&libraries=places"
+      async defer
+      ></script>
 </body>
 </html>
