@@ -1,4 +1,4 @@
-const {MongoClient} = require('mongodb');
+const {MongoClient, ServerApiVersion} = require('mongodb');
 
 async function main(){
     /**
@@ -6,9 +6,9 @@ async function main(){
      * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
      */
     const uri = "mongodb+srv://admin:emorymaps2022@aws-emorymaps-db.tj1y7al.mongodb.net/?retryWrites=true&w=majority";
- 
+    //const uri = "mongodb+srv://read_only:BYTLQdnUPyd9v1N5@aws-emorymaps-db.tj1y7al.mongodb.net/?retryWrites=true&w=majority";
 
-    const client = new MongoClient(uri);
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
  
     try {
         // Connect to the MongoDB cluster
