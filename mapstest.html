@@ -10,7 +10,7 @@
     crossorigin="anonymous">
     <script src = "https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <title>My Google Map</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <style>
         #map {
             flex-basis: 0;
@@ -26,7 +26,7 @@
 
         #floating-panel {
             position: absolute;
-            top: 15%;
+            top: 17%;
             z-index: 5;
             text-align: center;
             font-family: "Roboto", "sans-serif";
@@ -94,14 +94,34 @@
             overflow: auto;
         }
 
+        #left-img {
+            float: left;
+            width: 40%;
+        }
+
+        #right-img {
+            float: right;
+            width: 40%;
+        }
+
+        #place-photos {
+            max-width: auto;
+            max-height: 225px;
+            object-fit: cover;
+        }
+
         /* Dropdown Button */
-        .dropbtn {
-            background-color: #9f9f9f;
-            color: white;
-            padding: 16px;
-            font-size: 16px;
+
+        .btn {
+            background-color: #c8c2c2;
+            padding: 8px;
+            font-size: 12px;
             border: none;
             cursor: pointer;
+        }
+
+        .btn:hover, .btn:focus {
+            background-color: #6f6f6f;
         }
 
         /* Dropdown button on hover & focus */
@@ -120,17 +140,18 @@
             display: none;
             position: absolute;
             background-color: #f1f1f1;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            min-width: 120px;
+            box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.2);
             z-index: 1;
         }
 
         /* Links inside the dropdown */
         .dropdown-content a {
             color: black;
-            padding: 12px 16px;
+            padding: 1px 1px;
             text-decoration: none;
             display: block;
+            font-size: 12px;
         }
 
         /* Change color of dropdown links on hover */
@@ -152,6 +173,8 @@
     <div class = 'google_map' id="map"></div>
     <div id = 'sidebar'>
         <img id = "place-photos" src="" width = 100%>
+        <button id = 'left-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #1a23fd; background-color: #1a23fd;">left</button>
+        <button id = 'right-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #1a23fd; background-color: #1a23fd;">right</button>
         <button id = 'directions-button' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Get directions</button>
         <div class = "card-block" id = "place-name"></div>
         <div class = "card-block" id = "formatted-address"></div>
@@ -165,7 +188,7 @@
             <button onclick = "myFunction()" class="dropbtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Transportation
             </button>
-            <div id = 'transport-drop' class="dropdown-content" aria-labelledby="dropdownMenuButton">
+            <div id = 'transport-drop' class="dropdown-content btn" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" id = 'WALKING' href="#" onclick = "setTransport('WALKING')">Walking</a>
               <a class="dropdown-item" id = 'DRIVING' href="#" onclick = "setTransport('DRIVING')">Driving</a>
               <a class="dropdown-item" id = 'BICYCLING' href="#" onclick = "setTransport('BICYCLING')">Biking</a>
@@ -175,47 +198,44 @@
     </div>
     </div>
     <div id="floating-panel">
-        <input id="hide-markers" type="button" value="Hide Markers" />
-        <input id="show-markers" type="button" value="Show Markers" />
-        <input id="delete-markers" type="button" value="Delete Markers" />
-        <input id="food-markers" type="button" value="Food" />
-        <input id="dorm-markers" type="button" value="Dorms" />
-        <input id="study-markers" type="button" value="Study Spaces" />
-        <input id="events-markers" type="button" value="Events" />
-      </div>
+        <input class = 'btn' id="hide-markers" type="button" value="Hide" />
+        <input class = 'btn' id="show-markers" type="button" value="Show" />
+        <input class = 'btn' id="delete-markers" type="button" value="Delete" />
+        <div class="dropdown">
+            <button onclick = "showFilter('food-filter')" class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Food
+            </button>
+            <div id = 'food-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" id = 'food-drop' href="#">All Filters</a>
+                <a class="dropdown-item" id = 'coffee-drop' href="#">Coffee</a>
+                <a class="dropdown-item" id = 'dooley-drop' href="#">Dooley</a>
+                <a class="dropdown-item" id = 'meal-swipes-drop' href="#">Meal Swipes</a>
+                <a class="dropdown-item" id = 'vegan-drop' href="#">Vegan</a>
+                <a class="dropdown-item" id = 'vegetarian-drop' href="#">Vegetarian</a>
+                <a class="dropdown-item" id = 'vending-drop' href="#">Vending Machine</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button onclick = "showFilter('study-filter')" class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Study
+            </button>
+            <div id = 'study-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" id = 'study-drop' href="#">All Filters</a>
+                <a class="dropdown-item" id = 'library-drop' href="#">Library</a>
+                <a class="dropdown-item" id = 'printer-drop' href="#">Printer</a>
+                <a class="dropdown-item" id = 'private-study-drop' href="#">Private Study Room</a>
+                <a class="dropdown-item" id = 'whiteboard-drop' href="#">Whiteboard</a>
+            </div>
+        </div>
+        <button  id="residential-filter" class="btn" type="button" aria-haspopup="true" aria-expanded="false">Residential</button>
+        <button  id="academic-filter" class="btn" type="button" aria-haspopup="true" aria-expanded="false">Academic</button>
+        <button  id="id-filter" class="btn" type="button" aria-haspopup="true" aria-expanded="false">ID Required</button>
+        <button  id="events-filter" class="btn" type="button" aria-haspopup="true" aria-expanded="false">Events</button>
+    </div>
         <iframe src="" frameborder="0"></iframe>
     </div>
     <div class="clearfix"></div>
     <script>
-        /*
-        import {MongoClient} from "mongodb";
-
-        async function main(){
-
-        const uri = "mongodb+srv://admin:emorymaps2022@aws-emorymaps-db.tj1y7al.mongodb.net/?retryWrites=true&w=majority";
- 
-        const client = new MongoClient(uri);
- 
-        try {
-        // Connect to the MongoDB cluster
-            await client.connect(); //END COPY
-            await listDatabases(client);
-
-        } catch (e) { 
-            console.error(e);
-        } finally {
-            await client.close();
-        }
-        }
-    main().catch(console.error);
-    //connected to data base
-    async function listDatabases(client){
-        databasesList = await client.db().admin().listDatabases();
- 
-        console.log("Databases:");
-        databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-    };
-    */
 
         var map;
         var markers = [];
@@ -225,6 +245,13 @@
         var markerArray = [];
         var filterPlaces = [];
         var filterHub = [];
+        var practiceRoute = [];
+        var directionsStart;
+        var directionsEnd;
+        var currentGeometry;
+        var distances = [];
+        var place;
+        var photoNum;
 
         function addMarker(props) {
             var marker = new google.maps.Marker({
@@ -327,17 +354,78 @@
             }
         ];
 
+        practiceRoute = [
+            {
+                name: 'Woodruff Physical Education Center',
+                coords: [
+                    {
+                        lat: 33.79347720574329,
+                        lng: -84.32667216271575
+                    },
+                    {
+                        lat: 33.793283,
+                        lng: -84.325106
+                    }
+                ]
+            },
+            {
+                name: 'Callaway Memorial Center',
+                coords: [
+                    {
+                        lat: 33.79115871434023,
+                        lng: -84.32413239696604
+                    },
+                    {
+                        lat: 33.79143900561269,
+                        lng: -84.32394857183496
+                    },
+                    {
+                        lat: 33.79175782290775,
+                        lng: -84.32434165763024
+                    },
+                    {
+                        lat: 33.79134987566006,
+                        lng: -84.32436966533899
+                    },
+                    {
+                        lat: 33.791668,
+                        lng: -84.324293
+                    }
+                ]
+            }
+        ];
+
              // add event listeners for the buttons
             document.getElementById("show-markers").addEventListener("click", function() {showMarkers(markers);});
             document.getElementById("hide-markers").addEventListener("click", function() {hideMarkers(markers);});
             document.getElementById("delete-markers").addEventListener("click", function () {deleteMarkers(markers);});
-            document.getElementById('food-markers').addEventListener('click', function() {applyFilter('food');});
-            document.getElementById('dorm-markers').addEventListener('click', function() {applyFilter('dorm');});
-            document.getElementById('study-markers').addEventListener('click', function() {applyFilter('study');});
-            document.getElementById('events-markers').addEventListener('click', function() {applyEventsFilter();});
+            
+            document.getElementById('food-drop').addEventListener('click', function() {applyFilter('food');});
+            document.getElementById('coffee-drop').addEventListener('click', function() {applyFilter('coffee');});
+            document.getElementById('dooley-drop').addEventListener('click', function() {applyFilter('dooley');});
+            document.getElementById('meal-swipes-drop').addEventListener('click', function() {applyFilter('meal-swipes');});
+            document.getElementById('vegan-drop').addEventListener('click', function() {applyFilter('vegan');});
+            document.getElementById('vegetarian-drop').addEventListener('click', function() {applyFilter('vegetarian');});
+
+            document.getElementById('study-drop').addEventListener('click', function() {applyFilter('study');});
+            document.getElementById('library-drop').addEventListener('click', function() {applyFilter('library');});
+            document.getElementById('printer-drop').addEventListener('click', function() {applyFilter('printer');});
+            document.getElementById('private-study-drop').addEventListener('click', function() {applyFilter('private-study');});
+            document.getElementById('whiteboard-drop').addEventListener('click', function() {applyFilter('whiteboard');});
+
+            document.getElementById('events-filter').addEventListener('click', function() {applyEventsFilter();});
+            document.getElementById('academic-filter').addEventListener('click', function() {applyFilter('academic');});
+            document.getElementById('id-filter').addEventListener('click', function() {applyFilter('id');});
+
             document.getElementById('sidebar').hidden = true;
             document.getElementById('directions-button').hidden = true;
             document.getElementById('directions-sidebar').hidden = true;
+
+            document.getElementById('right-img').addEventListener('click', function() {nextImage(place, 'right-img');});
+            document.getElementById('left-img').addEventListener('click', function() {nextImage(place, 'left-img');});
+
+            //autocomplete.addListener('place_changed', nextImage(place, 'right-img')); //ugh
+            //autocomplete.addListener('place_changed', nextImage(place, 'left-img')); //ugh 2
      
             infoWindow = new google.maps.InfoWindow();
 
@@ -353,7 +441,7 @@
                 (position) => {
                     const pos = {
                         lat: position.coords.latitude,
-                        lng: position.coords.longitude,
+                        lng: position.coords.longitude
                     };
 
                 map.setCenter(pos);
@@ -416,7 +504,6 @@
             */
         }
 
-
         var locationForm = document.getElementById('location-form');
         var clearButton = document.getElementById('clear');
 
@@ -431,10 +518,15 @@
             deleteMarkers(markers);
             deleteMarkers(markerArray);
             directionsRenderer.setMap(null);
+            directionsRenderer.setPanel(null);
         });
 
         function myFunction() {
             document.getElementById("transport-drop").classList.toggle("show");
+        }
+
+        function showFilter(filter) {
+            document.getElementById(filter).classList.toggle("show");
         }
 
         // Close the dropdown menu if the user clicks outside of it
@@ -465,8 +557,6 @@
             })
             .then(function(response) {
                 //log full response
-                console.log(response);
-
                 //add marker
                 //addMarker(location.coords);
 
@@ -500,27 +590,35 @@
         }
 
         function reverseGeocode() {
-            e.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getCurrentAddress);
+                navigator.geolocation.getCurrentPosition(getCurrentGeometry);
+            }
+        }
 
-            var pos;
-            var address;
-            var coordinates = navigator.geolocation.getCurrentPosition(
-            (position) => {
-                    pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                    }
-            });
+        function getCurrentAddress(position) {
+            axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
 
-            let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${pos.lat},${pos.lng}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`;
-            fetch(url)
-
-            .then(response => response.json())
-            .then(data =>  {
-                console.log(data);
-                start = data.results[0].formattedAddress;
+            .then(function(response) {
+                console.log(response);
+                directionsStart = response.data.results[0].formatted_address;
             })
-            .catch(err => console.warn(err.message));
+
+            .catch(function(error) {
+                console.log(error);
+            })
+        }
+
+        function getCurrentGeometry(position) {
+            axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
+
+            .then(function(response) {
+                currentGeometry = response.data.results[0].geometry.location;
+            })
+
+            .catch(function(error) {
+                console.log(error);
+            })
         }
 
         var autocomplete;
@@ -545,7 +643,10 @@
             autocomplete.addListener('place_changed', onPlaceChanged);
 
             function onPlaceChanged() {
-                var place = autocomplete.getPlace();
+                place = autocomplete.getPlace();
+                photoNum = 0;
+
+                findAllDistances(place.name);
 
                 if(!place.geometry) {
                     //did not select a prediction
@@ -558,11 +659,13 @@
                         </ul>
                 `;
 
-                document.getElementById('formatted-address').innerHTML = `
+                if(place.formattedAddress){
+                    document.getElementById('formatted-address').innerHTML = `
                     <ul class = "list-group">
                         <li class = "list-group-item"><strong>Address</strong>: ${place.formatted_address}</li>
                         </ul>
-                `;
+                    `;
+                }
 
                 document.getElementById('geometry').innerHTML = `
                     <ul class = "list-group">
@@ -570,25 +673,34 @@
                         </ul>
                 `;
 
-                document.getElementById('phone').innerHTML = `
+                if(place.phone) {
+                    document.getElementById('phone').innerHTML = `
                     <ul class = "list-group">
                         <li class = "list-group-item"><strong>Phone</strong>: ${place.formatted_phone_number}</li>
                         </ul>
                 `;
+                }
 
-                document.getElementById('website').innerHTML = `
+                if(place.website) {
+                    document.getElementById('website').innerHTML = `
                     <ul class = "list-group">
                         <li class = "list-group-item"><strong>Website</strong>: <a href = ${place.website}>Click here</a></li>
                         </ul>
                 `;
+                }
+
                 if (place.photos) {
-
-                var firstPhoto = place.photos[0].getUrl();
-
-                document.getElementById(`place-photos`).src = `${firstPhoto}`;
+                    var firstPhoto = place.photos[0].getUrl();
+                    document.getElementById(`place-photos`).src = `${firstPhoto}`;
+                    if (place.photos.length > 1) {
+                        document.getElementById('left-img').hidden = false;
+                        document.getElementById('right-img').hidden = false;
+                    }
                 }
                 else {
-                    document.getElementById(`place-photos`).src = `images/Screen Shot 2022-10-08 at 9.16.01 PM.png`; 
+                    document.getElementById(`place-photos`).src = `https://upload.wikimedia.org/wikipedia/commons/1/11/Greg_Fenves_13879_003.jpg`; 
+                    document.getElementById('left-img').hidden = true;
+                    document.getElementById('right-img').hidden = true;
                 }
 
                 document.getElementById('sidebar').hidden = false;
@@ -606,7 +718,6 @@
                 });
                 }
             }
-            
         }
 
     function setMapOnAll(map, array) {
@@ -647,11 +758,18 @@
 
         // Retrieve the start and end locations and create
         // a DirectionsRequest using WALKING directions.
-        var start = 'emory student center'; //how do we get reverse geocoding to work???
+        reverseGeocode();
         var end = document.getElementById('location-input').value;
+        //var chicago = new google.maps.LatLng(41.850033, -87.6500523); //you're the best
+        if (directionsEnd == '') {
+            directionsEnd = end;
+        } else {
+            directionsEnd = compareDistances(distances);
+        }
+
         var request = {
-            origin: start,
-            destination: end,
+            origin: directionsStart,
+            destination: directionsEnd,
             travelMode: mode
         };
 
@@ -705,10 +823,11 @@
     });
 
     function setTransport(mode) {
-            calculateAndDisplayRoute(directionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
+        calculateAndDisplayRoute(directionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
     }
 
     function applyFilter(filter) {
+        deleteMarkers(markers);
         for (let i = 0; i < filterPlaces.length; i++) {
             let types = filterPlaces[i].types;
             let j = 0;
@@ -716,7 +835,7 @@
                 j++;
             }
             if (j < types.length) {
-                if (filter == 'food') {
+                if (filter == 'food' || 'coffee' || 'meal-swipes' || 'vegan' || 'vegetarian') {
                     addMarker({
                         coords: filterPlaces[i].coords,
                         content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
@@ -733,11 +852,109 @@
     }
 
     function applyEventsFilter() { //still need to account if multiple clubs involved
+        deleteMarkers(markers);
         for (let i = 0; i < filterHub.length; i++) {
             addMarker({
                 coords: filterHub[i].coords,
                 content: `<b><font size='4'>${filterHub[i].name}</font></b><br> <b>Who</b><br> ${filterHub[i].types[0]}<br> <b>When</b><br> ${filterHub[i].hours}<br> <b>Where</b><br> ${filterHub[i].place}<br><a href = ${filterHub[i].link}>View on The Hub</a><br>`
             }); 
+        }
+    }
+
+    function calculateDistance(start, end) {
+        let request = {
+            origin: start,
+            destination: end,
+            travelMode: 'WALKING'
+        };
+
+        directionsService.route(request, function(response, status) { //directions only exists inside here
+            if (status == "OK") {
+            //var warnings = document.getElementById("warnings_panel");
+            //warnings.innerHTML = "" + response.routes[0].warnings + "";
+                distances.push(new Array(2));
+                distances[distances.length-1][0] = end;
+                distances[distances.length-1][1] = response.routes[0].legs[0].distance.value;
+                //distances.push[end, response.routes[0].legs[0].distance.value];
+            }
+        });
+    }
+
+    function findAllDistances(value) { //still a work in progress but testing
+        distances = [];
+        let i = 0;
+        while (i < practiceRoute.length && practiceRoute[i].name != value) {
+            i++;
+        }
+        if (i < practiceRoute.length) {
+            for (j = 0; j < practiceRoute[i].coords.length; j++) {
+                calculateDistance(currentGeometry, practiceRoute[i].coords[j]);
+            }
+        }
+        else {
+            directionsEnd = '';
+        }
+    }
+
+    /*
+    function calculateDistance(start, end) { //gotta finish this for sure... haversine formula
+        let lat1 = start.lat; //may need to be changed if the format is incorrect
+        let lat2 = end.lat;
+        let lon1 = start.lng;
+        let lon2 = end.lng;
+
+        const R = 6371e3; // metres
+        const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+        const φ2 = lat2 * Math.PI/180;
+        const Δφ = (lat2-lat1) * Math.PI/180;
+        const Δλ = (lon2-lon1) * Math.PI/180;
+
+        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+x
+        const d = R * c; // in metres
+        return d;
+    }
+    */
+
+    //returns index/entrance of the shortest distance
+
+    function compareDistances(value) {
+        //[coords, distance]
+        let shortest = 0;
+        for (i = 1; i < value.length; i++) {
+            if (value[i][1] < value[shortest][1]) {
+                shortest = i;
+            }
+        }
+        return value[shortest][0];
+    }
+
+    function nextImage(place, direction) {
+        console.log(place);
+        if(place.photos && place.photos.length > 1) {
+            if (direction == 'right-img') {
+                if (photoNum < place.photos.length - 1) {
+                    photoNum++;
+                }
+                else {
+                    photoNum = 0;
+                }
+            }
+
+            if (direction == 'left-img') {
+                if (photoNum > 0) {
+                    photoNum--;
+                }
+                else {
+                    photoNum = place.photos.length - 1;
+                }
+            }
+            let newPhoto = place.photos[photoNum].getUrl();
+
+            document.getElementById(`place-photos`).src = `${newPhoto}`;
         }
     }
     
