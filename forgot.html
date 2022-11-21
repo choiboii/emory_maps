@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {font-family: Georgia, serif;}
+
+        input[type = text], input[type = password] {
+            width: 100%;
+            padding: 12 px 20 px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            color: #212C65;
+            opacity: 20%;
+        }
+
+        button {
+            background-color: #B58500;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .imgcontainer {
+            text-align: center;
+            padding-top: 16px;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-top: 10%;
+        }
+
+        img.avatar {
+            width: 60%;
+        }
+
+        .container {
+            padding: 16px;
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+
+        .btmcontainer {
+            padding: 16px;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-bottom: 10%;
+        }
+
+        span.psw {
+            float:right;
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+        .userinput {
+            padding: 16px 16px;
+        }
+        p.graf {
+            color: white;
+            text-align: center;
+            margin-top: 16px;
+            margin-bottom: 0px;
+        }
+
+        input.remember {
+            margin-top: 24px;
+        }
+        .header {
+            font-size: xx-large;
+            margin-top: 0px;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset password</title>
+</head>
+<body>
+    <form action="/action_page.php" method="post">
+        <div class="imgcontainer" style="background-color: #212C65;">
+            <img src="/images/Screen Shot 2022-10-08 at 9.16.01 PM.png" alt="Avatar" class = "avatar">
+        </div>
+        <div class="container" style="background-color: #212C65;">
+            <h2 class = "header" style="color: white;">Reset password</h2>
+            <label for="uname" style="color: white;">Email</label>
+            <input class="userinput" type="text" placeholder="first.last@emory.edu" name = "uname" required>
+
+            <label for="psw" style="color: white;">Password</label>
+            <input class="userinput" type="text" placeholder="Password" name="psw" required>
+
+            <label for="psw" style="color: white;">Confirm Password</label>
+            <input class="userinput" type="text" placeholder="Re-enter password" name="psw" required>
+
+            <button type = "submit">Reset password</button>
+
+            <p class = "graf" style="color: white;">You will receive an email asking you to confirm your password reset.</p>
+
+        </div>
+
+        <div class = "btmcontainer" style="background-color: #212C65;">
+            <p class = "graf"> Back to <a href="login.html" style="color: #B58500;"><b>LOGIN</b></a></span>
+        </div>
+    </form>
+</body>
+</html>
