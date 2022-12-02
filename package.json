@@ -1,6 +1,8 @@
 {
+  "type": "module",
   "dependencies": {
     "mongodb": "^4.11.0",
+    "node": "^19.2.0",
     "requirejs": "^2.3.6"
   }
 }
