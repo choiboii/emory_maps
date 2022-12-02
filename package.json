@@ -17,7 +17,7 @@
   "name": "emory_maps",
   "description": "An app designed to provide a streamlined experience in navigating Emory University's campus.",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.html",
   "devDependencies": {},
   "repository": {
     "type": "git",
