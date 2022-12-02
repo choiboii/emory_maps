@@ -71,7 +71,7 @@
         }
         #container {
             height: 600px;
-            display:flex;
+            display: flex;
         }
 
         #sidebar {
@@ -105,12 +105,12 @@
             padding-bottom: 50px;
         }
 
-        .btn-group {
+        .btn-group .scroll-btn {
             color: white;
             border: none;
             padding: 8px;
             text-align: center;
-            display: inline;
+            display: inline-block;
             font-size: 12px;
             cursor: pointer;
             width: 100%;
@@ -123,11 +123,6 @@
             font-size: 12px;
             border: none;
             cursor: pointer;
-        }
-
-        .check-label {
-            padding: 0px;
-            margin: 0px;
         }
 
         .btn:hover, .btn:focus {
@@ -176,12 +171,7 @@
             #floating-panel {
                 display: none;
             }
-        } 
-        
-        .route-buttons {
-            display: inline;
-        }
-
+        }   
     </style> 
 </head>
 <body>
@@ -196,32 +186,24 @@
     <div id = 'sidebar'>
         <img id = "place-photos" src="" width = 100%>
         <div class="btn-group">
-            <button id = 'left-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Previous Image</button>
-            <button id = 'right-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Next Image</button>
+            <button class="scroll-btn" id = 'left-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Previous Image</button>
+            <button class="scroll-btn" id = 'right-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Next Image</button>
         </div>
         <div class = "card-block" id = "place-name"></div>
         <button id = 'directions-button' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Get directions</button>
     </div>
     <div id = 'directions-sidebar'>
-        <div id = 'route-buttons'>
-            <div class="dropdown">
-                <button onclick = "myFunction()" style="background-color: #212C65; color: white" class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Transportation
-                </button>
-                <div id = 'transport-drop' class="dropdown-content btn" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" id = 'WALKING' href="#" onclick = "setTransport('WALKING')">Walking</a>
-                  <a class="dropdown-item" id = 'DRIVING' href="#" onclick = "setTransport('DRIVING')">Driving</a>
-                  <a class="dropdown-item" id = 'BICYCLING' href="#" onclick = "setTransport('BICYCLING')">Biking</a>
-                  <a class="dropdown-item" id = 'TRANSIT' href="#" onclick = "setTransport('TRANSIT')">Transit</a>
-                </div>
-              </div>
-              <button class='btn btn-primary' type="button" style="background-color: #212C65; color: white">
-                <label class = 'check-label'>Show Least Elevation
-                  <input type="checkbox" id='elevation-check'>
-                  <span class="checkmark"></span>
-                </label>
-              </button>
-        </div>
+        <div class="dropdown">
+            <button onclick = "myFunction()" class="dropbtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Transportation
+            </button>
+            <div id = 'transport-drop' class="dropdown-content btn" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" id = 'WALKING' href="#" onclick = "setTransport('WALKING')">Walking</a>
+              <a class="dropdown-item" id = 'DRIVING' href="#" onclick = "setTransport('DRIVING')">Driving</a>
+              <a class="dropdown-item" id = 'BICYCLING' href="#" onclick = "setTransport('BICYCLING')">Biking</a>
+              <a class="dropdown-item" id = 'TRANSIT' href="#" onclick = "setTransport('TRANSIT')">Transit</a>
+            </div>
+          </div>
     </div>
     </div>
     <div id="floating-panel">
@@ -273,21 +255,30 @@
             </div>
         </div>
         <button  id="events-filter" class="btn" type="button" aria-haspopup="true" aria-expanded="false">Events</button>
-        <button  id="current-location-button" class="btn" type="button" style = 'color:white; background-color: #212C65;' aria-haspopup="true" aria-expanded="false">Current Location</button>
-        <button  id="shuttles-button" class="btn" type="button" style = 'color:white; background-color: #212C65;' aria-haspopup="true" aria-expanded="false">Shuttles</button>
+        <button  id="current-location-button" class="btn" type="button" style = 'color:black; background-color: red;' aria-haspopup="true" aria-expanded="false">Current Location</button>
     </div>
         <iframe src="" frameborder="0"></iframe>
     </div>
     <div class="clearfix"></div>
     <script>
-
+        async function getData(url='http://localhost:3000/'){
+            const response = await fetch(url);
+            const data = response.json();
+            
+            return data;
+        }
+        
         var map;
         var markers = [];
         var directionsRenderer;
-        var elevationDirectionsRenderer;
         var directionsService;
         var stepDisplay;
         var markerArray = [];
+        var x = getData();
+        
+        var filterPlaces = x;
+        console.log(filterPlaces);
+        var filterHub = [];
         var practiceRoute = [];
         var directionsStart;
         var directionsEnd;
@@ -297,113 +288,6 @@
         var photoNum;
         var elevationGains = [];
         var elevations = [];
-        var globalMode;
-
-        var shuttleStops = [
-            {
-              name: 'Andrews Circle @ HSRB (Northbound)',
-              types: ['A', 'C', 'D', 'Loop'],
-              coords: {lat: 33.79389,lng: -84.31721},
-            },
-            {
-              name: 'Andrews Circle @ HSRB (Southbound)',
-              types: ['DEx'],
-              coords: {lat: 33.79406, lng: -84.31730},
-            },
-            {
-              name: 'Andrews Circle @ Starvine Way',
-              types: ['C', 'E'],
-              coords: {lat: 33.79481, lng: -84.31698},
-            },
-            {
-              name: 'Clifton @ 1525 Clifton Rd',
-              types: ['M'],
-              coords: {lat: 33.79808, lng: -84.32265},
-            },
-            {
-              name: 'Clifton @ 1599 Clifton Rd',
-              types: ['A', 'B'],
-              coords: {lat: 33.79970, lng: -84.32401},
-            },
-            {
-              name: 'Clifton @ 1762 Clifton Rd',
-              types: ['C'],
-              coords: {lat: 33.80071, lng: -84.33073},
-            },
-            {
-              name: 'Eagle Row @ Few Hall/Evans Hall',
-              types: ['B', 'C', 'Loop'],
-              coords: {lat: 33.79512, lng: -84.32331},
-            },
-            {
-              name: 'Eagle Row @ Raoul Hall',
-              types: ['B', 'Loop'],
-              coords: {lat: 33.79406, lng: -84.31730},
-            },
-            {
-              name: 'Eagle Row @ The Depot',
-              types: ['B', 'C', 'Loop'],
-              coords: {lat: 33.79406, lng: -84.31730},
-            },
-            {
-              name: 'Starvine Way @ Dooley Drive',
-              types: ['A', 'D', 'C Toco Hills'],
-              coords: {lat: 33.79818, lng: -84.30784},
-            },
-        ];
-
-        var filterPlaces = [
-            {
-              name: 'Atwood Chemistry Center',
-              types: ['food', 'building', 'academic', 'study', 'coffee'],
-              coords: {lat: 33.79169445277475,lng: -84.32627981186319},
-              hours: `Mon-Fri 8:00 a.m. - 3:00 p.m.`
-            },
-
-            {
-              name: 'Cox Hall',
-              types: ['food', 'vending', 'dooley', 'printer', 'study'],
-              coords: {lat: 33.79204205870855, lng: -84.32346306752329},
-              hours: `Mon-Fri 7:30 a.m. - 9:00 p.m.<br> Sat-Sun 11:00 a.m. - 6:00 p.m.`,
-              link: 'https://emoryatlanta.cafebonappetit.com/cafe/cox/'
-            },
-
-            {
-              name: 'Woodruff Residential Center',
-              types: ['building', 'dorm', 'id', 'food', 'dooley', 'meal swipes', 'vending'],
-              coords: {lat: 33.7971, lng:-84.3215},
-              hours: `Sun-Th 6:00 p.m. - 1:00 a.m.`,
-              link: 'https://www.raysnewyorkpizza.com/copy-of-emory-university'
-            }
-        ];
-        var filterHub = [
-            {
-              name: 'Wonderful Wednesday',
-              place: 'Asbury Circle',
-              types: ['Wonderful Wednesday'],
-              coords: {lat: 33.7926, lng: -84.3240},
-              hours: `12:00 p.m. - 2:00 p.m.`,
-              link: 'https://emory.campuslabs.com/engage/event/8149634'
-            },
-
-            {
-              name: 'Giving Gratitude',
-              place: 'Cox Bridge',
-              types: ['TableTalk'],
-              coords: {lat: 33.7924, lng: -84.3232},
-              hours: `4:00 p.m. - 6:00 p.m.`,
-              link: 'https://emory.campuslabs.com/engage/event/8567644'
-            },
-
-            {
-              name: 'EOSA Thanksgiving Potluck',
-              place: 'ESC MPR 5&6',
-              types: ['Emory Orchestral Study Associate'],
-              coords: {lat: 33.7935, lng: -84.3239},
-              hours: `7:00 p.m. - 10:00 p.m.`,
-              link: 'https://emory.campuslabs.com/engage/event/8574357'
-            }
-        ];
 
         function addMarker(props, iconLink) {
             var marker = new google.maps.Marker({
@@ -440,11 +324,66 @@
             //new map
             map = new google.maps.Map(document.getElementById('map'), options);
 
-            //listen for click on map; use to add markers on click
-            // google.maps.event.addListener(map, 'click', 
-            //     function(event) {
-            //         addMarker({coords:event.latLng}, 'https://maps.google.com/mapfiles/ms/micons/red-dot.png');
-            // });
+            //listen for click on map
+            google.maps.event.addListener(map, 'click', 
+                function(event) {
+                    addMarker({coords:event.latLng}, 'https://maps.google.com/mapfiles/ms/micons/red-dot.png');
+            });
+
+            /*filterPlaces = [
+            {
+              name: 'Atwood Chemistry Center',
+              types: ['food', 'building', 'academic', 'study', 'coffee'],
+              coords: {lat: 33.79169445277475,lng: -84.32627981186319},
+              hours: `Mon-Fri 8:00 a.m. - 3:00 p.m.`
+            },
+
+            {
+              name: 'Cox Hall',
+              types: ['food', 'vending', 'dooley', 'printer', 'study'],
+              coords: {lat: 33.79204205870855, lng: -84.32346306752329},
+              hours: `Mon-Fri 7:30 a.m. - 9:00 p.m.<br> Sat-Sun 11:00 a.m. - 6:00 p.m.`,
+              link: 'https://emoryatlanta.cafebonappetit.com/cafe/cox/'
+            },
+
+            {
+              name: 'Woodruff Residential Center',
+              types: ['building', 'dorm', 'id', 'food', 'dooley', 'meal swipes', 'vending'],
+              coords: {lat: 33.7971, lng:-84.3215},
+              hours: `Sun-Th 6:00 p.m. - 1:00 a.m.`,
+              link: 'https://www.raysnewyorkpizza.com/copy-of-emory-university'
+            }
+        ];*/
+        
+
+        filterHub = [
+            {
+              name: 'Wonderful Wednesday',
+              place: 'Asbury Circle',
+              types: ['Wonderful Wednesday'],
+              coords: {lat: 33.7926, lng: -84.3240},
+              hours: `12:00 p.m. - 2:00 p.m.`,
+              link: 'https://emory.campuslabs.com/engage/event/8149634'
+            },
+
+            {
+              name: 'Giving Gratitude',
+              place: 'Cox Bridge',
+              types: ['TableTalk'],
+              coords: {lat: 33.7924, lng: -84.3232},
+              hours: `4:00 p.m. - 6:00 p.m.`,
+              link: 'https://emory.campuslabs.com/engage/event/8567644'
+            },
+
+            {
+              name: 'EOSA Thanksgiving Potluck',
+              place: 'ESC MPR 5&6',
+              types: ['Emory Orchestral Study Associate'],
+              coords: {lat: 33.7935, lng: -84.3239},
+              hours: `7:00 p.m. - 10:00 p.m.`,
+              link: 'https://emory.campuslabs.com/engage/event/8574357'
+            }
+        ];
 
         practiceRoute = [
             {
@@ -518,11 +457,6 @@
             document.getElementById('right-img').addEventListener('click', function() {nextImage(place, 'right-img');});
             document.getElementById('left-img').addEventListener('click', function() {nextImage(place, 'left-img');});
 
-            //document.getElementById('show-min-el-route').addEventListener('click', function() {highlightLeastElevationRoute(elevationDirectionsRenderer, globalMode);});
-            document.getElementById('elevation-check').addEventListener('click', function() {displayElevation();});
-            document.getElementById('shuttles-button').addEventListener('click', function() {applyShuttleFilter('B');});
-            //document.getElementById('hide-min-el-route').addEventListener('click', function() {elevationDirectionsRenderer.setMap(null);});
-
             document.getElementById('current-location-button').addEventListener('click', function() {
             // Try HTML5 geolocation.
             if (navigator.geolocation) {
@@ -558,12 +492,11 @@
                 map: map
             }
             directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
-            elevationDirectionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
             directionsRenderer.setPanel(document.getElementById("directions-sidebar"));
 
             stepDisplay = new google.maps.InfoWindow();
             
-            globalMode = 'WALKING';
+            var mode = 'WALKING';
             
             calculateAndDisplayRoute(
                 directionsRenderer,
@@ -571,7 +504,7 @@
                 markerArray,
                 stepDisplay,
                 map,
-                globalMode
+                mode
             );
             /*
 
@@ -608,25 +541,15 @@
             deleteMarkers(markerArray);
             directionsRenderer.setMap(null);
             directionsRenderer.setPanel(null);
-            elevationDirectionsRenderer.setMap(null);
-            globalMode = 'WALKING';
         }
 
+        //event listeners
         locationForm.addEventListener('submit', geocode);
         locationForm.addEventListener('keydown', initAutocomplete);
         clearButton.addEventListener('click', function() {clearDirections(); document.getElementById('location-input').value='';});
 
         function myFunction() {
             document.getElementById("transport-drop").classList.toggle("show");
-        }
-
-        function displayElevation() {
-            var checkBox = document.getElementById("elevation-check");
-            if (checkBox.checked == true){
-                highlightLeastElevationRoute(elevationDirectionsRenderer, globalMode);
-            } else {
-                elevationDirectionsRenderer.setMap(null);
-            }
         }
 
         // Close the dropdown menu if the user clicks outside of it
@@ -846,7 +769,7 @@
         }
 
         var request = {
-            origin: directionsStart, //come back to this
+            origin: directionsStart,
             destination: directionsEnd,
             travelMode: mode,
             provideRouteAlternatives: true
@@ -911,40 +834,42 @@
     });
 
     function setTransport(mode) {
-        globalMode = mode;
         calculateAndDisplayRoute(directionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
-        calculateAndDisplayRoute(elevationDirectionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
     }
 
     function applyFilter(filter) {
-        deleteMarkers(markers);
-        for (let i = 0; i < filterPlaces.length; i++) {
-            let types = filterPlaces[i].types;
-            let j = 0;
-            while (j < types.length && filter != types[j]) {
-                j++;
+        getData().then(function(filterPlaces){
+            console.log(filterPlaces);
+            deleteMarkers(markers);
+            for (let i = 0; i < filterPlaces.length; i++) {
+                let types = filterPlaces[i].tags;
+                let j = 0;
+                while (j < types.length && filter != types[j]) {
+                    j++;
+                }
+                if (j < types.length) {
+                    if (filter == 'food' || filter == 'coffee' || filter == 'meal-swipes' || filter == 'vegan' || filter == 'vegetarian') {
+                        addMarker({
+                            coords: filterPlaces[i].coords,
+                            content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
+                        }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png'); 
+                    }
+                    else if (filter == 'study' || filter == 'library' || filter == 'printer' || filter == 'private-study' || filter == 'whiteboard') {
+                        addMarker({
+                            coords: filterPlaces[i].coords,
+                            content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
+                        }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png'); 
+                    }
+                    else if (filter == 'building' || filter == 'academic' || filter == 'id' || filter == 'dorm') {
+                        addMarker({
+                            coords: filterPlaces[i].coords,
+                            content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
+                        }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png'); 
+                    }
+                }
             }
-            if (j < types.length) {
-                if (filter == 'food' || filter == 'coffee' || filter == 'meal-swipes' || filter == 'vegan' || filter == 'vegetarian') {
-                    addMarker({
-                        coords: filterPlaces[i].coords,
-                        content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png'); 
-                }
-                else if (filter == 'study' || filter == 'library' || filter == 'printer' || filter == 'private-study' || filter == 'whiteboard') {
-                    addMarker({
-                        coords: filterPlaces[i].coords,
-                        content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png'); 
-                }
-                else if (filter == 'building' || filter == 'academic' || filter == 'id' || filter == 'dorm') {
-                    addMarker({
-                        coords: filterPlaces[i].coords,
-                        content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png'); 
-                }
-            }
-        }
+    })
+        
     }
 
     function applyEventsFilter() { //still need to account if multiple clubs involved
@@ -957,32 +882,11 @@
         }
     }
 
-    function applyShuttleFilter(shuttle) { //still need to account if multiple clubs involved
-        deleteMarkers(markers);
-        for (let i = 0; i < shuttleStops.length; i++) {
-            let j = 0;
-            while (j < shuttleStops[i].types.length && shuttle != shuttleStops[i].types[j]) {
-                j++;
-            }
-
-            if (j < shuttleStops[i].types.length) {
-                var shuttleString = '';
-                for (let k = 0; k < shuttleStops[i].types.length; k++) {
-                    shuttleString += shuttleStops[i].types[k] + ', ';
-                }
-                addMarker({
-                    coords: shuttleStops[i].coords,
-                    content: `<b><font size='4'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/bus.png'); 
-            }
-        }
-    }
-
     function calculateDistance(start, end) {
         let request = {
             origin: start,
             destination: end,
-            travelMode: globalMode //here it is
+            travelMode: 'WALKING' //here it is
         };
 
         directionsService.route(request, function(response, status) { //directions only exists inside here
@@ -1012,6 +916,31 @@
             directionsEnd = '';
         }
     }
+
+    /*
+    function calculateDistance(start, end) { //gotta finish this for sure... haversine formula
+        let lat1 = start.lat; //may need to be changed if the format is incorrect
+        let lat2 = end.lat;
+        let lon1 = start.lng;
+        let lon2 = end.lng;
+
+        const R = 6371e3; // metres
+        const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+        const φ2 = lat2 * Math.PI/180;
+        const Δφ = (lat2-lat1) * Math.PI/180;
+        const Δλ = (lon2-lon1) * Math.PI/180;
+
+        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+x
+        const d = R * c; // in metres
+        return d;
+    }
+    */
+
+    //returns index/entrance of the shortest distance
 
     function compareDistances(value) {
         if (value.length == 0) return null;
@@ -1058,26 +987,11 @@
                 })
                 .then(({ results }) => {
                     if (results[0].elevation > elevations[index]) {elevations[index] += results[0].elevation - elevations[index];}
-                });
-                //.catch((e) =>
-                //infowindow.setContent("Elevation service failed due to: " + e));
+                })
+                .catch((e) =>
+                infowindow.setContent("Elevation service failed due to: " + e));
             }
         //}
-    }
-
-    function highlightLeastElevationRoute(directionResult, mode) {
-        var lowest = 0;
-        for (var i = 1; i < elevationGains.length; i++) {if (elevationGains[i] < elevationGains[lowest]) {lowest = i;}}
-
-        directionResult.setDirections(directionsRenderer.getDirections());
-        directionResult.setOptions({
-            map: map,
-            routeIndex: lowest,
-            polylineOptions: {
-                strokeColor: 'red'
-            }
-        });
-        calculateAndDisplayRoute(directionResult, directionsService, markerArray, stepDisplay, map, mode);
     }
     
     </script>
