@@ -1,8 +1,32 @@
 {
   "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "mongodb": "^4.11.0",
+    "mongoose": "^6.7.5",
     "node": "^19.2.0",
     "requirejs": "^2.3.6"
-  }
+  },
+  "name": "emory_maps",
+  "description": "An app designed to provide a streamlined experience in navigating Emory University's campus.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choiboii/emory_maps.git"
+  },
+  "author": "Dijkstra's Disciples",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/choiboii/emory_maps/issues"
+  },
+  "homepage": "https://github.com/choiboii/emory_maps#readme"
 }
