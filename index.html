@@ -15,7 +15,6 @@
         #map {
             flex-basis: 0;
             flex-grow: 4;
-            height: 600px;
         }
 
         .container {
@@ -49,7 +48,7 @@
             padding-top: 8px;
         }
 
-        #clear {
+        #clear #clear-shuttles-btn {
             color: gray;
             border-left: none;
             border-color: lightgray;
@@ -71,7 +70,7 @@
         }
         #container {
             height: 600px;
-            display: flex;
+            display:flex;
         }
 
         #sidebar {
@@ -95,6 +94,16 @@
             overflow: auto;
         }
 
+        #shuttles-sidebar {
+            flex-grow: 1;
+            padding: 1rem;
+            max-width: 30rem;
+            width: 100px;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+
         #place-photos {
             max-width: auto;
             max-height: 225px;
@@ -105,12 +114,11 @@
             padding-bottom: 50px;
         }
 
-        .btn-group .scroll-btn {
+        .btn-group {
             color: white;
             border: none;
-            padding: 8px;
             text-align: center;
-            display: inline-block;
+            display: inline;
             font-size: 12px;
             cursor: pointer;
             width: 100%;
@@ -125,6 +133,72 @@
             cursor: pointer;
         }
 
+        .check-label {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .check-label-shuttle {
+            display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+        }
+
+        .check-label-shuttle input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+.check-label-shuttle:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.check-label-shuttle input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.check-label-shuttle input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.check-label-shuttle .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
         .btn:hover, .btn:focus {
             background-color: #6f6f6f;
         }
@@ -167,11 +241,47 @@
         /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
         .show {display:block;}
 
-        @media only screen and (max-width: 1025px) {
-            #floating-panel {
+        @media screen and (max-width: 900px) {
+            #shuttles-sidebar{
                 display: none;
             }
-        }   
+        }
+
+        @media screen and (max-width: 1040px) {
+            #sidebar{
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 1040px) {
+            #directions-sidebar{
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 1040px) {
+            #directions-panel{
+                display: none;
+            }
+        }
+        
+        .route-buttons {
+            display: inline;
+        }
+
+        #title {
+            display: flex;
+            align-items: center; /* Vertical align the elements to the center */
+        }
+
+        #shuttles-header {
+            margin: 0;
+        }
+
+        #clear-shuttles-btn {
+            margin-left: auto; /* Push this element to the right */
+        }
+
     </style> 
 </head>
 <body>
@@ -186,24 +296,89 @@
     <div id = 'sidebar'>
         <img id = "place-photos" src="" width = 100%>
         <div class="btn-group">
-            <button class="scroll-btn" id = 'left-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Previous Image</button>
-            <button class="scroll-btn" id = 'right-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Next Image</button>
+            <button id = 'left-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Previous Image</button>
+            <button id = 'right-img' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Next Image</button>
         </div>
         <div class = "card-block" id = "place-name"></div>
         <button id = 'directions-button' type = "submit" class = "btn btn-primary btn-block" style="border-color: #212C65; background-color: #212C65;">Get directions</button>
     </div>
     <div id = 'directions-sidebar'>
-        <div class="dropdown">
-            <button onclick = "myFunction()" class="dropbtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Transportation
-            </button>
-            <div id = 'transport-drop' class="dropdown-content btn" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" id = 'WALKING' href="#" onclick = "setTransport('WALKING')">Walking</a>
-              <a class="dropdown-item" id = 'DRIVING' href="#" onclick = "setTransport('DRIVING')">Driving</a>
-              <a class="dropdown-item" id = 'BICYCLING' href="#" onclick = "setTransport('BICYCLING')">Biking</a>
-              <a class="dropdown-item" id = 'TRANSIT' href="#" onclick = "setTransport('TRANSIT')">Transit</a>
+        <div id = 'route-buttons'>
+            <div class="dropdown">
+                <button onclick = "myFunction()" style="background-color: #212C65; color: white" class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Transportation
+                </button>
+                <div id = 'transport-drop' class="dropdown-content btn" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" id = 'WALKING' href="#" onclick = "setTransport('WALKING')">Walking</a>
+                  <a class="dropdown-item" id = 'DRIVING' href="#" onclick = "setTransport('DRIVING')">Driving</a>
+                  <a class="dropdown-item" id = 'BICYCLING' href="#" onclick = "setTransport('BICYCLING')">Biking</a>
+                  <a class="dropdown-item" id = 'TRANSIT' href="#" onclick = "setTransport('TRANSIT')">Transit</a>
+                </div>
+              </div>
+              <button class='btn btn-primary' type="button" style="background-color: #212C65; color: white">
+                <label class = 'check-label'>Show Least Elevation
+                  <input type="checkbox" id='elevation-check'>
+                  <span class="checkmark"></span>
+                </label>
+              </button>
+        </div>
+    </div>
+    <div id = 'shuttles-sidebar'>
+        <div id = 'title'>
+        <h4 id = 'shuttles-header'>Emory Campus Shuttles</h4>
+        <button id='clear-shuttles-btn' class="btn btn-outline-secondary" type="button">></button>
+    </div>
+
+        <div id = 'shuttle-checks'>
+            <label class="check-label-shuttle">A
+                <input type="checkbox" id = 'A'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">B
+                <input type="checkbox" id = 'B'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">B Express (BX)
+                <input type="checkbox" id = 'BX'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle" style = 'display: inline-block;'>C
+                <input type="checkbox" id = 'C'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">C-Publix
+                <input type="checkbox" id = 'C-Publix'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">C-Toco Hills
+                <input type="checkbox" id = 'C-TocoHills'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">D
+                <input type="checkbox" id = 'D'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">D Express (DX)
+                <input type="checkbox" id = 'DX'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">E
+                <input type="checkbox" id = 'E'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">M
+                <input type="checkbox" id = 'M'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">NPRC
+                <input type="checkbox" id = 'NPRC'>
+                <span class="checkmark"></span>
+              </label>
+            <label class="check-label-shuttle">Loop
+                <input type="checkbox" id = 'Loop'>
+                <span class="checkmark"></span>
+              </label>
             </div>
-          </div>
     </div>
     </div>
     <div id="floating-panel">
@@ -226,6 +401,7 @@
                 <a class="dropdown-item" id = 'coffee-drop' href="#">Coffee</a>
                 <a class="dropdown-item" id = 'dooley-drop' href="#">Dooley</a>
                 <a class="dropdown-item" id = 'meal-swipes-drop' href="#">Meal Swipes</a>
+                <a class="dropdown-item" id = 'microwave-drop' href="#">Microwave</a>
                 <a class="dropdown-item" id = 'vegan-drop' href="#">Vegan</a>
                 <a class="dropdown-item" id = 'vegetarian-drop' href="#">Vegetarian</a>
                 <a class="dropdown-item" id = 'vending-drop' href="#">Vending Machine</a>
@@ -248,37 +424,41 @@
               Buildings
             </button>
             <div id = 'buildings-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" id = 'building-drop' href="#">All Filters</a>
                 <a class="dropdown-item" id = 'academic-filter' href="#">Academic</a>
                 <a class="dropdown-item" id = 'id-filter' href="#">ID Required</a>
                 <a class="dropdown-item" id = 'residential-filter' href="#">Residential</a>
             </div>
         </div>
-        <button  id="events-filter" class="btn" type="button" aria-haspopup="true" aria-expanded="false">Events</button>
-        <button  id="current-location-button" class="btn" type="button" style = 'color:black; background-color: red;' aria-haspopup="true" aria-expanded="false">Current Location</button>
+        <div class="dropdown">
+            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Campus
+            </button>
+            <div id = 'campus-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" id = 'events-filter' href="#">Events</a>
+                <a class="dropdown-item" id = 'shuttles-button' href="#">Shuttles</a>
+            </div>
+        </div>
+        <button  id="current-location-button" class="btn" type="button" style = 'color:white; background-color: #212C65;' aria-haspopup="true" aria-expanded="false">Current Location</button>
     </div>
         <iframe src="" frameborder="0"></iframe>
     </div>
     <div class="clearfix"></div>
     <script>
-        async function getData(url='https://emory-maps-backend.herokuapp.com/'){
+        //data fetching function
+        async function getData(url='http://emory-maps-backend.herokuapp.com'){
             const response = await fetch(url);
             const data = response.json();
             
             return data;
         }
-        
+
         var map;
         var markers = [];
         var directionsRenderer;
+        var elevationDirectionsRenderer;
         var directionsService;
         var stepDisplay;
         var markerArray = [];
-        var x = getData();
-        
-        var filterPlaces = x;
-        console.log(filterPlaces);
-        var filterHub = [];
         var practiceRoute = [];
         var directionsStart;
         var directionsEnd;
@@ -288,25 +468,184 @@
         var photoNum;
         var elevationGains = [];
         var elevations = [];
+        var globalMode;
+        var pinned = [];
+        var shuttleNames = ['A', 'B', 'BX', 'C', 'C-Publix', 'C-TocoHills', 'D', 'DX', 'E', 'M', 'NPRC', 'Loop'];
+        var edgeCases = [
+            {
+                edge: ['WoodPEC', 'Woodruff PE Center'],
+                real: 'George W. Woodruff Physical Education Center'
+            },
+            {
+                edge: ['Harland Cinema', 'Black Student Union'],
+                real: 'AMUC'
+            },
+            {
+                edge: ['School of Medicine'],
+                real: 'Emory University School of Medicine'
+            },
+            {
+                edge: ['Lullwater'],
+                real: 'Lullwater Preserve'
+            },
+            {
+                edge: ['White Hall'],
+                real: 'Goodrich C. White Hall'
+            },
+            {
+                edge: ['Candler Library'],
+                real: 'Candler Library'
+            },
+            {
+                edge: ['ESC'],
+                real: 'Emory Student Center'
+            },
+            {
+                edge: ['Cannon'],
+                real: 'Cannon Chapel'
+            },
+            {
+                edge: ['Jenkins Courtyard', 'Coca-Cola Commons'],
+                real: '1300 Clifton Rd, Atlanta, Georgia'
+            },
+            {
+                edge: ['Atwood'],
+                real: 'Atwood Chemistry Center'
+            },
+            {
+                edge: ['Cox Bridge'],
+                real: 'The Emory Farmers Market'
+            },
+            {
+                edge: ['Woodruff Library'],
+                real: 'Robert W. Woodruff Library'
+            },
+            {
+                edge: ['fixie', 'Fixie'],
+                real: 'The Fixie, Eagle Row'
+            },
+            {
+                edge: ['SAAC'],
+                real: 'Student Activity and Academic Center'
+            }
+        ];
 
-        function addMarker(props, iconLink) {
+        var shuttleStops = [
+            {
+              name: 'Andrews Circle @ HSRB (Northbound)',
+              types: ['A', 'C', 'D', 'Loop'],
+              coords: {lat: 33.79389,lng: -84.31721},
+            },
+            {
+              name: 'Andrews Circle @ HSRB (Southbound)',
+              types: ['DX'],
+              coords: {lat: 33.79406, lng: -84.31730},
+            },
+            {
+              name: 'Andrews Circle @ Starvine Way',
+              types: ['C', 'E'],
+              coords: {lat: 33.79481, lng: -84.31698},
+            },
+            {
+              name: 'Clifton @ 1525 Clifton Rd',
+              types: ['M'],
+              coords: {lat: 33.79808, lng: -84.32265},
+            },
+            {
+              name: 'Clifton @ 1599 Clifton Rd',
+              types: ['A', 'B'],
+              coords: {lat: 33.79970, lng: -84.32401},
+            },
+            {
+              name: 'Clifton @ 1762 Clifton Rd',
+              types: ['C'],
+              coords: {lat: 33.80071, lng: -84.33073},
+            },
+            {
+              name: 'Eagle Row @ Few Hall/Evans Hall',
+              types: ['B', 'C', 'Loop'],
+              coords: {lat: 33.794865582021494, lng: -84.32490286458182},
+            },
+            {
+              name: 'Eagle Row @ Raoul Hall',
+              types: ['B', 'Loop'],
+              coords: {lat: 33.79513460781988, lng: -84.32340171795491}, //edit database bc Eagle Row @ Raoul and @ The Depot are the same
+            },
+            {
+              name: 'Starvine Way @ Dooley Drive',
+              types: ['A', 'D', 'C-TocoHills'],
+              coords: {lat: 33.79818, lng: -84.30784},
+            },
+        ];
+        
+        var filterHub = [
+            {
+                name: 'Alloy Holiday Party',
+                location: `Student Activity and Academic Center`,
+                url: "hello",
+                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
+                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
+                club: "The Emory Wheel"
+            },
+            {
+                name: 'Alloy Holiday Party',
+                location: `WoodPEC Rm 304`,
+                url: "hello",
+                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
+                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
+                club: "The Emory Wheel"
+            },
+            {
+                name: 'Alloy Holiday Party',
+                location: `Woodruff Library`,
+                url: "hello",
+                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
+                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
+                club: "The Emory Wheel"
+            },
+            {
+                name: 'Alloy Holiday Party',
+                location: `testing for errors`,
+                url: "hello",
+                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
+                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
+                club: "The Emory Wheel"
+            }
+        ];
+
+        function addMarker(props, iconLink, markerContent, markerName) {
             var marker = new google.maps.Marker({
                 position: props.coords,
                 map: map,
-                icon: iconLink
+                icon: iconLink,
+                markerContent: markerContent,
+                markerName: markerName
             });
     
             //check content
             if(props.content) {
                 var infoWindow = new google.maps.InfoWindow({
                     content: props.content,
+                    maxWidth: 200
+                });
+
+                var infoWindow2 = new google.maps.InfoWindow({
+                    content: props.content,
+                    maxWidth: 200
+                });
+
+                marker.addListener('mouseover', function() {
+                    infoWindow.open(map, marker); 
                 });
 
                 marker.addListener('click', function() {
-                    infoWindow.open(map, marker);
+                    infoWindow2.open(map, marker);
+                });
+
+                marker.addListener('mouseout', function() {
+                    infoWindow.close(map, marker); 
                 });
             }
-
             markers.push(marker);
         }
 
@@ -316,74 +655,23 @@
         }
 
         function initMap() {
+            geocoder = new google.maps.Geocoder();
             //map options
             var options = {
                 zoom: 16,
-                center:{lat: 33.7971, lng: -84.3222}
+                center:{lat: 33.7971, lng: -84.3222},
+                clickableIcons: false
             }
             //new map
             map = new google.maps.Map(document.getElementById('map'), options);
+            setCurrentGeometry();
 
             //listen for click on map
-            google.maps.event.addListener(map, 'click', 
+            /*google.maps.event.addListener(map, 'click', 
                 function(event) {
                     addMarker({coords:event.latLng}, 'https://maps.google.com/mapfiles/ms/micons/red-dot.png');
             });
-
-            /*filterPlaces = [
-            {
-              name: 'Atwood Chemistry Center',
-              types: ['food', 'building', 'academic', 'study', 'coffee'],
-              coords: {lat: 33.79169445277475,lng: -84.32627981186319},
-              hours: `Mon-Fri 8:00 a.m. - 3:00 p.m.`
-            },
-
-            {
-              name: 'Cox Hall',
-              types: ['food', 'vending', 'dooley', 'printer', 'study'],
-              coords: {lat: 33.79204205870855, lng: -84.32346306752329},
-              hours: `Mon-Fri 7:30 a.m. - 9:00 p.m.<br> Sat-Sun 11:00 a.m. - 6:00 p.m.`,
-              link: 'https://emoryatlanta.cafebonappetit.com/cafe/cox/'
-            },
-
-            {
-              name: 'Woodruff Residential Center',
-              types: ['building', 'dorm', 'id', 'food', 'dooley', 'meal swipes', 'vending'],
-              coords: {lat: 33.7971, lng:-84.3215},
-              hours: `Sun-Th 6:00 p.m. - 1:00 a.m.`,
-              link: 'https://www.raysnewyorkpizza.com/copy-of-emory-university'
-            }
-        ];*/
-        
-
-        filterHub = [
-            {
-              name: 'Wonderful Wednesday',
-              place: 'Asbury Circle',
-              types: ['Wonderful Wednesday'],
-              coords: {lat: 33.7926, lng: -84.3240},
-              hours: `12:00 p.m. - 2:00 p.m.`,
-              link: 'https://emory.campuslabs.com/engage/event/8149634'
-            },
-
-            {
-              name: 'Giving Gratitude',
-              place: 'Cox Bridge',
-              types: ['TableTalk'],
-              coords: {lat: 33.7924, lng: -84.3232},
-              hours: `4:00 p.m. - 6:00 p.m.`,
-              link: 'https://emory.campuslabs.com/engage/event/8567644'
-            },
-
-            {
-              name: 'EOSA Thanksgiving Potluck',
-              place: 'ESC MPR 5&6',
-              types: ['Emory Orchestral Study Associate'],
-              coords: {lat: 33.7935, lng: -84.3239},
-              hours: `7:00 p.m. - 10:00 p.m.`,
-              link: 'https://emory.campuslabs.com/engage/event/8574357'
-            }
-        ];
+            */
 
         practiceRoute = [
             {
@@ -433,56 +721,59 @@
             document.getElementById('food-drop').addEventListener('click', function() {applyFilter('food');});
             document.getElementById('coffee-drop').addEventListener('click', function() {applyFilter('coffee');});
             document.getElementById('dooley-drop').addEventListener('click', function() {applyFilter('dooley');});
-            document.getElementById('meal-swipes-drop').addEventListener('click', function() {applyFilter('meal-swipes');});
+            document.getElementById('meal-swipes-drop').addEventListener('click', function() {applyFilter('swipes');});
+            document.getElementById('microwave-drop').addEventListener('click', function() {applyFilter('microwave');});
             document.getElementById('vegan-drop').addEventListener('click', function() {applyFilter('vegan');});
             document.getElementById('vegetarian-drop').addEventListener('click', function() {applyFilter('vegetarian');});
+            document.getElementById('vending-drop').addEventListener('click', function() {applyFilter('vending');});
 
             document.getElementById('study-drop').addEventListener('click', function() {applyFilter('study');});
             document.getElementById('library-drop').addEventListener('click', function() {applyFilter('library');});
             document.getElementById('printer-drop').addEventListener('click', function() {applyFilter('printer');});
-            document.getElementById('private-study-drop').addEventListener('click', function() {applyFilter('private-study');});
+            document.getElementById('private-study-drop').addEventListener('click', function() {applyFilter('private_study');});
             document.getElementById('whiteboard-drop').addEventListener('click', function() {applyFilter('whiteboard');});
 
-            document.getElementById('building-drop').addEventListener('click', function() {applyFilter('building');});
             document.getElementById('academic-filter').addEventListener('click', function() {applyFilter('academic');});
-            document.getElementById('id-filter').addEventListener('click', function() {applyFilter('id');});
-            document.getElementById('residential-filter').addEventListener('click', function() {applyFilter('dorm');});
+            document.getElementById('id-filter').addEventListener('click', function() {applyFilter('emory id');});
+            document.getElementById('residential-filter').addEventListener('click', function() {applyFilter('residence');});
 
             document.getElementById('events-filter').addEventListener('click', function() {applyEventsFilter();});
 
             document.getElementById('sidebar').hidden = true;
             document.getElementById('directions-button').hidden = true;
             document.getElementById('directions-sidebar').hidden = true;
+            document.getElementById('shuttles-sidebar').hidden = true;
 
             document.getElementById('right-img').addEventListener('click', function() {nextImage(place, 'right-img');});
             document.getElementById('left-img').addEventListener('click', function() {nextImage(place, 'left-img');});
 
+            document.getElementById('elevation-check').addEventListener('click', function() {displayElevation();});
+
+            document.getElementById('shuttles-button').addEventListener('click', function() {showShuttlesSidebar();});
+
+            document.getElementById('A').addEventListener('click', function() {displayShuttleStops('A');});
+            document.getElementById('B').addEventListener('click', function() {displayShuttleStops('B');});
+            document.getElementById('BX').addEventListener('click', function() {displayShuttleStops('BX');});
+            document.getElementById('C').addEventListener('click', function() {displayShuttleStops('C');});
+            document.getElementById('D').addEventListener('click', function() {displayShuttleStops('D');});
+            document.getElementById('DX').addEventListener('click', function() {displayShuttleStops('DX');});
+            document.getElementById('E').addEventListener('click', function() {displayShuttleStops('E');});
+            document.getElementById('M').addEventListener('click', function() {displayShuttleStops('M');});
+            document.getElementById('NPRC').addEventListener('click', function() {displayShuttleStops('NPRC');});
+            document.getElementById('C-TocoHills').addEventListener('click', function() {displayShuttleStops('C-TocoHills');});
+            document.getElementById('C-Publix').addEventListener('click', function() {displayShuttleStops('C-Publix');});
+            document.getElementById('Loop').addEventListener('click', function() {displayShuttleStops('Loop');});
+
+            document.getElementById('clear-shuttles-btn').addEventListener('click', function() {clearShuttlesSidebar();});
+
             document.getElementById('current-location-button').addEventListener('click', function() {
-            // Try HTML5 geolocation.
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-
-                map.setCenter(pos);
-                map.setZoom(16);
+                map.setCenter(currentGeometry);
+                map.setZoom(18);
                 var currentPosMarker = {
-                    coords:pos,
-                    content: `<strong>Current Location</strong>: (${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)})`,
+                    coords:currentGeometry,
+                    content: `(${currentGeometry.lat.toFixed(4)}, ${currentGeometry.lng.toFixed(4)})`,
                 }
-
                 addMarker(currentPosMarker, 'https://maps.google.com/mapfiles/ms/micons/red-dot.png');
-            },
-            () => {
-                handleLocationError(true, infoWindow, map.getCenter());
-            });
-            } else {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, infoWindow, map.getCenter());
-            }
             });
      
             infoWindow = new google.maps.InfoWindow();
@@ -492,11 +783,12 @@
                 map: map
             }
             directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+            elevationDirectionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
             directionsRenderer.setPanel(document.getElementById("directions-sidebar"));
 
             stepDisplay = new google.maps.InfoWindow();
             
-            var mode = 'WALKING';
+            globalMode = 'WALKING';
             
             calculateAndDisplayRoute(
                 directionsRenderer,
@@ -504,7 +796,7 @@
                 markerArray,
                 stepDisplay,
                 map,
-                mode
+                globalMode
             );
             /*
 
@@ -541,16 +833,69 @@
             deleteMarkers(markerArray);
             directionsRenderer.setMap(null);
             directionsRenderer.setPanel(null);
+            elevationDirectionsRenderer.setMap(null);
+            globalMode = 'WALKING';
+            if (document.getElementById('elevation-check').checked == true) {document.getElementById('elevation-check').checked = false;}
         }
 
-        //event listeners
-        locationForm.addEventListener('submit', geocode);
+        //locationForm.addEventListener('submit', geocode);
         locationForm.addEventListener('keydown', initAutocomplete);
         clearButton.addEventListener('click', function() {clearDirections(); document.getElementById('location-input').value='';});
 
         function myFunction() {
             document.getElementById("transport-drop").classList.toggle("show");
         }
+
+        function displayElevation() {
+            var checkBox = document.getElementById("elevation-check");
+            if (checkBox.checked == true){
+                highlightLeastElevationRoute(elevationDirectionsRenderer, globalMode);
+            } else {
+                elevationDirectionsRenderer.setMap(null);
+            }
+        }
+
+        function displayShuttleStops(elementId) { //doesn't work for multiple filters at a time... smth wrong with pinned array
+            var auxPinned = [];
+            var checkBox = document.getElementById(elementId);
+            if (checkBox.checked == true){
+                applyShuttleFilter(elementId);
+            } else {
+                deleteMarkers(markers);
+                for (let i = 0; i < pinned.length; i++) {
+                    let stillChecked = false;
+                    var index = 0; //skipping "Shuttles:"
+                    var thisMarkerContent = pinned[i].markerContent;
+                    var shuttle = thisMarkerContent.substring(index, thisMarkerContent.length);
+                    while (index < shuttle.length) {
+                    if (shuttle.indexOf(' ', index) == -1) {
+                        index = shuttle.length;
+                    }
+                    else {
+                    if (document.getElementById(shuttle.substring(index, shuttle.indexOf(' ', index))).checked == true) { //problem here
+                        index = shuttle.length;
+                        var shuttleString = pinned[i].markerContent;
+                        addMarker({
+                            coords: {
+                                lat: pinned[i].position.lat(),
+                                lng: pinned[i].position.lng()
+                            },
+                            content: `<b><font size='3'>${pinned[i].markerName}</font></b><br> <b>Shuttles:</b> ${shuttleString}`
+                        }, 'https://maps.google.com/mapfiles/ms/micons/bus.png', shuttleString, pinned[i].markerName);
+                        auxPinned.push(markers[markers.length - 1]); //smth here, too many markers
+                        index = shuttle.length;
+                    }
+                    else {
+                        index = shuttle.indexOf(' ', index) + 1;
+                    }
+                }
+            }
+            }
+            pinned = auxPinned;
+        }
+        map.setCenter(currentGeometry);
+        map.setZoom(15);
+    }
 
         // Close the dropdown menu if the user clicks outside of it
         window.onclick = function(event) {
@@ -566,9 +911,7 @@
             }
         }
 
-        function geocode(e) {
-            //prevent actual submit
-            e.preventDefault();
+        /*function geocode(place) {
 
             var location = document.getElementById('location-input').value;
             
@@ -579,6 +922,7 @@
                 }
             })
             .then(function(response) {
+
                 //log full response
                 //add marker
                 //addMarker(location.coords);
@@ -611,29 +955,47 @@
                 console.log(error);
             })
         }
+        */
 
         function reverseGeocode() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(getCurrentAddress);
-                navigator.geolocation.getCurrentPosition(getCurrentGeometry);
+                //navigator.geolocation.getCurrentPosition(getCurrentGeometry);
             }
         }
 
         function getCurrentAddress(position) {
             axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
 
-            .then(function(response) {directionsStart = response.data.results[0].formatted_address;})
+            .then(function(response) {
+                
+            if (response.data.results.length == 0) { //fix this to make it calculate haversines
+                directionsStart = currentGeometry; 
+            }
+            else{
+                directionsStart = response.data.results[0].formatted_address;
+            }
+            })
 
             .catch(function(error) {console.log(error);})
         }
 
-        function getCurrentGeometry(position) {
+        /*function getCurrentGeometry(position) {
             axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
 
-            .then(function(response) {currentGeometry = response.data.results[0].geometry.location;})
+            .then(function(response) {
+                //currentGeometry = response.data.results[0].geometry.location;
+                currentGeometry = {
+                    lat: sessionStorage.getItem('currentLat'),
+                    lng: sessionStorage.getItem('currentLng')
+                };
+                
+                console.log(currentGeometry);
+            })
 
             .catch(function(error) {console.log(error);})
         }
+        */
 
         var autocomplete;
             function initAutocomplete() {
@@ -657,6 +1019,7 @@
             autocomplete.addListener('place_changed', onPlaceChanged);
 
             function onPlaceChanged() {
+
                 if (markerArray.length != 0) {clearDirections();}
                 
                 place = autocomplete.getPlace();
@@ -708,15 +1071,15 @@
                 document.getElementById('directions-button').hidden = false;
 
                 var newMarker = {
-                    coords:place.geometry.location,
-                    content: `${place.name}`
+                    coords:place.geometry.location
                 }   
         
-                addMarker(newMarker, );
+                addMarker(newMarker, 'https://maps.google.com/mapfiles/ms/micons/red-dot.png');
                 map.setCenter( {
                     lat: place.geometry.location.lat(),
                     lng: place.geometry.location.lng()
                 });
+                map.setZoom(18);
                 }
             }
         }
@@ -759,6 +1122,7 @@
 
         // Retrieve the start and end locations and create
         // a DirectionsRequest using WALKING directions.
+
         reverseGeocode();
         var end = document.getElementById('location-input').value;
         var compared = compareDistances(distances);
@@ -769,7 +1133,7 @@
         }
 
         var request = {
-            origin: directionsStart,
+            origin: directionsStart, //come back to this
             destination: directionsEnd,
             travelMode: mode,
             provideRouteAlternatives: true
@@ -799,7 +1163,6 @@
         // can keep track of it and remove it when calculating new
         // routes.
          var myRoute = directionResult.routes[0].legs[0]; //here
-
 
         for (var i = 0; i < myRoute.steps.length; i++) {
             var marker = new google.maps.Marker({
@@ -834,51 +1197,241 @@
     });
 
     function setTransport(mode) {
+        globalMode = mode;
         calculateAndDisplayRoute(directionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
+        calculateAndDisplayRoute(elevationDirectionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
     }
+
+    /*function applyFilter2(filter) {
+        deleteMarkers(markers);
+        for (let i = 0; i < filterPlaces.length; i++) {
+            let types = filterPlaces[i].types;
+            let j = 0;
+            while (j < types.length && filter != types[j]) {
+                j++;
+            }
+            if (j < types.length) {
+                if (filter == 'food' || filter == 'coffee' || filter == 'meal-swipes' || filter == 'vegan' || filter == 'vegetarian') {
+                    addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: `<b><font size='3'>${filterPlaces[i].name}</font></b><br> <b>Hours:</b> ${filterPlaces[i].hours}<br> <a href = ${filterPlaces[i].link}>Menu</a>`
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png'); 
+                }
+                else if (filter == 'study' || filter == 'library' || filter == 'printer' || filter == 'private-study' || filter == 'whiteboard') {
+                    addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: `<b><font size='3'>${filterPlaces[i].name}</font></b><br> <b>Hours:</b> ${filterPlaces[i].hours}<br> <a href = ${filterPlaces[i].link}>Website</a>`
+                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png'); 
+                }
+                else if (filter == 'building' || filter == 'academic' || filter == 'id' || filter == 'dorm') {
+                    addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: `<b><font size='3'>${filterPlaces[i].name}</font></b><br> <b>Hours:</b> ${filterPlaces[i].hours}<br> <a href = ${filterPlaces[i].link}>Website</a>`
+                    }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png'); 
+                }
+            }
+        }
+    }*/
 
     function applyFilter(filter) {
         getData().then(function(filterPlaces){
             console.log(filterPlaces);
-            deleteMarkers(markers);
-            for (let i = 0; i < filterPlaces.length; i++) {
-                let types = filterPlaces[i].tags;
-                let j = 0;
-                while (j < types.length && filter != types[j]) {
-                    j++;
-                }
-                if (j < types.length) {
-                    if (filter == 'food' || filter == 'coffee' || filter == 'meal-swipes' || filter == 'vegan' || filter == 'vegetarian') {
-                        addMarker({
-                            coords: filterPlaces[i].coords,
-                            content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
-                        }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png'); 
-                    }
-                    else if (filter == 'study' || filter == 'library' || filter == 'printer' || filter == 'private-study' || filter == 'whiteboard') {
-                        addMarker({
-                            coords: filterPlaces[i].coords,
-                            content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
-                        }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png'); 
-                    }
-                    else if (filter == 'building' || filter == 'academic' || filter == 'id' || filter == 'dorm') {
-                        addMarker({
-                            coords: filterPlaces[i].coords,
-                            content: `<b><font size='4'>${filterPlaces[i].name}</font></b><br> <a href = ${filterPlaces[i].link}>Menu</a><br> <b>Hours</b><br> ${filterPlaces[i].hours}`
-                        }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png'); 
-                    }
-                }
+
+        deleteMarkers(markers);
+        for (let i = 0; i < filterPlaces.length; i++) {
+            if (filter == 'microwave' && filterPlaces[i].microwave == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
             }
+            else if (filter == 'dooley' && filterPlaces[i].dooley == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png'); 
+            }
+            else if (filter == 'swipes' && filterPlaces[i].swipes == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }
+            else if (filter == 'eagle' && filterPlaces[i].eagle == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }
+            else if (filter == 'coffee' && filterPlaces[i].coffee == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }
+            else if (filter == 'vegan' && filterPlaces[i].vegan == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }
+            else if (filter == 'vegetarian' && filterPlaces[i].vegetarian == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }
+            else if (filter == 'vending' && filterPlaces[i].vending == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }
+            else if (filter == 'printer' && filterPlaces[i].printer == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png');  
+            }
+            else if (filter == 'whiteboard' && filterPlaces[i].whiteboard == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png');  
+            }
+            else if (filter == 'private_study' && filterPlaces[i].private_study == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png');  
+            }
+            else if (filter == 'library' && filterPlaces[i].library == true) {
+                addMarker({
+                        coords: filterPlaces[i].coords,
+                        content: formatBuildingMarkerContent(filterPlaces[i])
+                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png');  
+            }
+            else if (filter == 'academic' && filterPlaces[i].tags.indexOf('academic') != -1) {
+                addMarker({
+                    coords: filterPlaces[i].coords,
+                    content: formatBuildingMarkerContent(filterPlaces[i])
+                }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png');  
+            }
+            else if (filter == 'emory id' && filterPlaces[i].tags.indexOf('emory id') != -1) {
+                addMarker({
+                    coords: filterPlaces[i].coords,
+                    content: formatBuildingMarkerContent(filterPlaces[i])
+                }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png');  
+            }
+            else if (filter == 'residence' && filterPlaces[i].tags.indexOf('residence') != -1) {
+                addMarker({
+                    coords: filterPlaces[i].coords,
+                    content: formatBuildingMarkerContent(filterPlaces[i])
+                }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png');  
+            }
+            else if (filter == 'study' && filterPlaces[i].tags.indexOf('study') != -1) {
+                addMarker({
+                    coords: filterPlaces[i].coords,
+                    content: formatBuildingMarkerContent(filterPlaces[i])
+                }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png');  
+            }
+            else if (filter == 'food' && filterPlaces[i].tags.indexOf('food') != -1) {
+                addMarker({
+                    coords: filterPlaces[i].coords,
+                    content: formatBuildingMarkerContent(filterPlaces[i])
+                }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png');  
+            }  
+        }
+        map.setCenter(currentGeometry);
+        map.setZoom(15);
     })
-        
     }
 
-    function applyEventsFilter() { //still need to account if multiple clubs involved
+    function applyEventsFilter() { //still need to account if multiple clubs involved... also if events_added = 0 put out an alert?
         deleteMarkers(markers);
+        //@TODO: add database in here and call it 'filterHub'
         for (let i = 0; i < filterHub.length; i++) {
-            addMarker({
-                coords: filterHub[i].coords,
-                content: `<b><font size='4'>${filterHub[i].name}</font></b><br> <b>Who</b><br> ${filterHub[i].types[0]}<br> <b>When</b><br> ${filterHub[i].hours}<br> <b>Where</b><br> ${filterHub[i].place}<br><a href = ${filterHub[i].link}>View on The Hub</a><br>`
-            }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png'); 
+            if (hasEventEnded(filterHub[i]) == false) {
+                geocoder.geocode( { 'address': filterHub[i].location}, function(results, status) {
+                    if (status == 'OK') {
+                        console.log(results);
+                        //var mapUrl = filterHub[i].map_url;
+                        //var commaIndex = mapUrl.indexOf(',');
+                        var latitude = results[0].geometry.location.lat();
+                        var longitude = results[0].geometry.location.lng();
+                        //var latitude = parseFloat(mapUrl.substring(mapUrl.indexOf('@') + 1, commaIndex));
+                        //var longitude = parseFloat(mapUrl.substring(commaIndex + 1, mapUrl.indexOf(',', commaIndex + 1)));
+                        addMarker({
+                            coords: {
+                                lat: latitude,
+                                lng: longitude
+                            },
+                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br><a href = ${filterHub[i].url}>View on The Hub</a><br>`
+                            }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png'); 
+                    } else {
+                        var newLocation = checkEdgeCases(filterHub[i].location);
+                        if (newLocation != 'NO MATCH') {
+                            geocoder.geocode( { 'address': newLocation}, function(results, status) {
+                            if (status == 'OK') {
+                                console.log(results);
+                                var latitude = results[0].geometry.location.lat();
+                                var longitude = results[0].geometry.location.lng();
+                                addMarker({
+                                    coords: {
+                                        lat: latitude,
+                                        lng: longitude
+                                        },
+                                    content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br><a href = ${filterHub[i].url}>View on The Hub</a><br>`
+                                }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png');
+                            }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        map.setCenter(currentGeometry);
+        map.setZoom(15);
+    }
+
+    function applyShuttleFilter(shuttle) {
+        //@TODO: insert shuttle data here as 'shuttleStops'
+        for (let i = 0; i < shuttleStops.length; i++) {
+            let j = 0;
+            while (j < shuttleStops[i].types.length && shuttle != shuttleStops[i].types[j]) {
+                j++;
+            }
+            var shuttleString = '';
+                for (let k = 0; k < shuttleStops[i].types.length; k++) {
+                    shuttleString += shuttleStops[i].types[k] + ' ';
+            }
+            if (j < shuttleStops[i].types.length) {
+                if (pinned.length == 0) {
+                    addMarker({
+                    coords: shuttleStops[i].coords,
+                    content: `<b><font size='3'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}`
+                }, 'https://maps.google.com/mapfiles/ms/micons/bus.png', shuttleString, shuttleStops[i].name);
+                pinned.push(markers[markers.length - 1]);
+
+                } else {
+
+                var included = false;
+                let j = 0;
+                while (j < pinned.length && !included) {
+                    if (pinned[j].position.lat() == shuttleStops[i].coords.lat && pinned[j].position.lng() == shuttleStops[i].coords.lng) {
+                        included = true;
+                    }
+                    j++;
+                }
+            if (!included) {
+                addMarker({
+                    coords: shuttleStops[i].coords,
+                    content: `<b><font size='3'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}`
+                }, 'https://maps.google.com/mapfiles/ms/micons/bus.png', shuttleString, shuttleStops[i].name);
+                pinned.push(markers[markers.length - 1]);
+            }
+            }
+        }
         }
     }
 
@@ -886,14 +1439,14 @@
         let request = {
             origin: start,
             destination: end,
-            travelMode: 'WALKING' //here it is
+            travelMode: globalMode //here it is
         };
 
         directionsService.route(request, function(response, status) { //directions only exists inside here
             if (status == "OK") {
             //var warnings = document.getElementById("warnings_panel");
             //warnings.innerHTML = "" + response.routes[0].warnings + "";
-                distances.push(new Array(2));
+                distances.push(new Array(2)); 
                 distances[distances.length-1][0] = end;
                 distances[distances.length-1][1] = response.routes[0].legs[0].distance.value;
                 //distances.push[end, response.routes[0].legs[0].distance.value];
@@ -902,7 +1455,7 @@
     }
 
     function findAllDistances(value) { //still a work in progress but testing
-        distances = [];
+        distances = []; //add new data here!!!!
         let i = 0;
         while (i < practiceRoute.length && practiceRoute[i].name != value) {
             i++;
@@ -916,31 +1469,6 @@
             directionsEnd = '';
         }
     }
-
-    /*
-    function calculateDistance(start, end) { //gotta finish this for sure... haversine formula
-        let lat1 = start.lat; //may need to be changed if the format is incorrect
-        let lat2 = end.lat;
-        let lon1 = start.lng;
-        let lon2 = end.lng;
-
-        const R = 6371e3; // metres
-        const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-        const φ2 = lat2 * Math.PI/180;
-        const Δφ = (lat2-lat1) * Math.PI/180;
-        const Δλ = (lon2-lon1) * Math.PI/180;
-
-        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-x
-        const d = R * c; // in metres
-        return d;
-    }
-    */
-
-    //returns index/entrance of the shortest distance
 
     function compareDistances(value) {
         if (value.length == 0) return null;
@@ -987,12 +1515,148 @@ x
                 })
                 .then(({ results }) => {
                     if (results[0].elevation > elevations[index]) {elevations[index] += results[0].elevation - elevations[index];}
-                })
-                .catch((e) =>
-                infowindow.setContent("Elevation service failed due to: " + e));
+                });
+                //.catch((e) =>
+                //infowindow.setContent("Elevation service failed due to: " + e));
             }
         //}
     }
+
+    function highlightLeastElevationRoute(directionResult, mode) {
+        var lowest = 0;
+        for (var i = 1; i < elevationGains.length; i++) {if (elevationGains[i] < elevationGains[lowest]) {lowest = i;}}
+
+        directionResult.setDirections(directionsRenderer.getDirections());
+        directionResult.setOptions({
+            map: map,
+            routeIndex: lowest,
+            polylineOptions: {
+                strokeColor: 'red'
+            }
+        });
+        calculateAndDisplayRoute(directionResult, directionsService, markerArray, stepDisplay, map, mode);
+    }
+
+    function clearShuttlesSidebar() {
+            document.getElementById('shuttles-sidebar').hidden = true;
+            deleteMarkers(markers);
+            pinned = [];
+            for (let i = 0; i < shuttleNames.length; i++) {
+                if (document.getElementById(shuttleNames[i]).checked == true) { document.getElementById(shuttleNames[i]).checked = false; }
+            }
+        }
+
+    function showShuttlesSidebar() {
+        deleteMarkers(markers);
+        document.getElementById('shuttles-sidebar').hidden = false;
+    }
+
+    function hasEventEnded(hubEvent) {
+        var current = new Date();
+
+        var parseStartDate = hubEvent.date.substring(0, hubEvent.date.indexOf(' at'));
+        var parseStartTime = hubEvent.date.substring(hubEvent.date.indexOf('at ') + 3, hubEvent.date.indexOf(' to'));
+        var parseEndDate = hubEvent.date.substring(hubEvent.date.indexOf(' to ') + 4, hubEvent.date.indexOf(' at', hubEvent.date.indexOf(' to ')));
+        var parseEndTime = hubEvent.date.substring(hubEvent.date.indexOf(' at ', hubEvent.date.indexOf(' to ')) + 4);
+
+        if (parseEndTime.indexOf('PM') != -1) {
+            var hours = parseInt(parseEndTime.substring(0, parseEndTime.indexOf(':'))) + 12;
+        }
+        else {
+            var hours = parseInt(parseEndTime.substring(0, parseEndTime.indexOf(':')));
+            if (hours == 12) {hours = 0};
+        }
+        //var hoursString = hours.toString();
+        var minutes = parseEndTime.substring(parseEndTime.indexOf(':') + 1, parseEndTime.indexOf('PM'));
+        if (current.getUTCHours() - 5 < hours) {
+            console.log('this event has not ended yet'); //so add marker
+            return false;
+        }
+        else if (current.getUTCHours() - 5 == hours && current.getUTCMinutes() < minutes) {
+            console.log('this event has still not ended yet'); //so add marker
+            return false;
+        }
+        else {return true;}
+    }
+
+    function setCurrentGeometry() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    currentGeometry = pos;
+                },
+            () => {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    function checkEdgeCases(eventLocation) {
+        var matched = false;
+        var i = 0;
+        while (i < edgeCases.length && matched == false) {
+            var j = 0;
+            while (j < edgeCases[i].edge.length && matched == false) {
+                if (eventLocation.indexOf(edgeCases[i].edge[j]) != -1) {matched = true;}
+                else {j++;}
+            }
+            if (matched == false) {i++;}
+        }
+        if (matched == true) return edgeCases[i].real;
+        else return 'NO MATCH';
+    }
+
+    function formatBuildingMarkerContent(building) {
+        var content = `<b><font size='3'>${building.name}</font></b><br>`;
+        if (building.rest_name) {content += `${building.rest_name}<br>`;}
+        if (building.hours) {content += `${building.hours}<br>`;}
+        if (building.link) {content += `<a href = ${building.link}>Website</a>`;}
+        return content;
+    }
+
+    /*function geocode(hubEventLocation) {
+
+        hubEventLocation = replaceSpaces(hubEventLocation);
+
+        var location = '1518%20Clifton%20Rd%20Atlanta%20GA%2030322%20USA'
+
+        var location2 = '1518%20Clifton%20Rd%20Atlanta%20GA';
+        var alt = '24%20Sussex%20Drive%20Ottawa%20ON';
+
+        //`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`
+
+        axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+            params: {
+                address: location,
+                key: "AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So",
+                location_type: 'ROOFTOP'
+            }
+        })
+        .then(function(response) {
+            console.log(response);
+            var formattedAddress = response.data.results[0].formatted_address;
+            var addressComponents = response.data.results[0].address_components;
+            var lat = response.data.results[0].geometry.location.lat.toFixed(4);
+            var lng = response.data.results[0].geometry.location.lng.toFixed(4);
+        })
+        .catch(function(error){
+            console.log(error);
+        })
+
+        axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=33.7975,-84.3234&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
+
+            .then(function(response) {
+                //console.log(response);
+            });
+
+    }*/
     
     </script>
     <script
