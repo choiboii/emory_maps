@@ -4,6 +4,7 @@ dotenv.config()
 import express from 'express'
 import mongoose from 'mongoose';
 const app = express () ;
+const PORT = process.env.PORT || 3000;
 
 import cors from 'cors'
 
@@ -37,5 +38,5 @@ app.get('/', (req, res) => {
 });
 
 // Server listen
-app.listen(3000, () => console.log("Server listening to port 3000"));
+app.listen(PORT, () => console.log(`Server listening to port ${PORT}`));
 
