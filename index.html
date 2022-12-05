@@ -264,6 +264,12 @@
                 display: none;
             }
         }
+
+        @media screen and (max-width: 635px) {
+            #floating-panel{
+                display: none;
+            }
+        }
         
         .route-buttons {
             display: inline;
@@ -393,7 +399,7 @@
             </div>
         </div>
         <div class="dropdown">
-            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: orange">
               Food
             </button>
             <div id = 'food-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
@@ -408,7 +414,7 @@
             </div>
         </div>
         <div class="dropdown">
-            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: mediumpurple">
               Study
             </button>
             <div id = 'study-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
@@ -420,7 +426,7 @@
             </div>
         </div>
         <div class="dropdown">
-            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: cornflowerblue">
               Buildings
             </button>
             <div id = 'buildings-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
@@ -430,7 +436,7 @@
             </div>
         </div>
         <div class="dropdown">
-            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="dropbtn btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: limegreen;">
               Campus
             </button>
             <div id = 'campus-filter' class="dropdown-content" aria-labelledby="dropdownMenuButton">
@@ -470,15 +476,16 @@
         var elevations = [];
         var globalMode;
         var pinned = [];
+        var filterHub;
         var shuttleNames = ['A', 'B', 'BX', 'C', 'C-Publix', 'C-TocoHills', 'D', 'DX', 'E', 'M', 'NPRC', 'Loop'];
         var edgeCases = [
             {
-                edge: ['WoodPEC', 'Woodruff PE Center'],
+                edge: ['WoodPEC', 'George W. Woodruff P.E. Center', 'Woodruff Physical Education Center', 'Woodruff Physical Education Track'],
                 real: 'George W. Woodruff Physical Education Center'
             },
             {
-                edge: ['Harland Cinema', 'Black Student Union'],
-                real: 'AMUC'
+                edge: ['Harland Cinema', 'Black Student Union', 'AMUC'],
+                real: 'Alumni Memorial University Center'
             },
             {
                 edge: ['School of Medicine'],
@@ -497,7 +504,7 @@
                 real: 'Candler Library'
             },
             {
-                edge: ['ESC'],
+                edge: ['ESC', 'Student Center', 'Dobbs University Center', 'Dobbs Common Table', `Kaldi's Emory Student Center`],
                 real: 'Emory Student Center'
             },
             {
@@ -525,94 +532,51 @@
                 real: 'The Fixie, Eagle Row'
             },
             {
-                edge: ['SAAC'],
+                edge: ['SAAC', 'Emory SAAC (Student Activity & Academic Center)'],
                 real: 'Student Activity and Academic Center'
+            },
+            {
+                edge: ['Anthropology Building'],
+                real: 'Emory University Department of Anthropology'
+            },
+            {
+                edge: ['Longstreet-Means Hall'],
+                real: 'Eagle Hall'
+            },
+            {
+                edge: ['Emerson Hall', 'Cherry Emerson Hall'],
+                real: 'Cherry Logan Emerson Hall'
+            },
+            {
+                edge: ['Department of Mathematics and Statistics', 'Department of Mathematics and Computer Science'],
+                real: 'Mathematics and Science Center'
+            },
+            {
+                edge: ['Barnes & Noble @ Emory University', 'Barnes & Noble @ Emory'],
+                real: 'Oxford Road Building'
+            },
+            {
+                edge: ['Psychology and Interdisciplinary Sciences Bldg', 'PAIS Building', 'Department of Psychology', 'Department of Quantitative Theory and Methods'],
+                real: 'Psychology and Interdisciplinary Sciences Building'
+            },
+            {
+                edge: ['Department of Visual Arts'],
+                real: 'Visual Arts Building'
+            },
+            {
+                edge: ['Emory University Department of Sociology'],
+                real: 'Tarbutton Hall'
+            },
+            {
+                edge: ['Department of Classics'],
+                real: 'Candler Library'
+            },
+            {
+                edge: ['Program in Linguistics'],
+                real: 'Modern Languages Building'
             }
         ];
-
-        var shuttleStops = [
-            {
-              name: 'Andrews Circle @ HSRB (Northbound)',
-              types: ['A', 'C', 'D', 'Loop'],
-              coords: {lat: 33.79389,lng: -84.31721},
-            },
-            {
-              name: 'Andrews Circle @ HSRB (Southbound)',
-              types: ['DX'],
-              coords: {lat: 33.79406, lng: -84.31730},
-            },
-            {
-              name: 'Andrews Circle @ Starvine Way',
-              types: ['C', 'E'],
-              coords: {lat: 33.79481, lng: -84.31698},
-            },
-            {
-              name: 'Clifton @ 1525 Clifton Rd',
-              types: ['M'],
-              coords: {lat: 33.79808, lng: -84.32265},
-            },
-            {
-              name: 'Clifton @ 1599 Clifton Rd',
-              types: ['A', 'B'],
-              coords: {lat: 33.79970, lng: -84.32401},
-            },
-            {
-              name: 'Clifton @ 1762 Clifton Rd',
-              types: ['C'],
-              coords: {lat: 33.80071, lng: -84.33073},
-            },
-            {
-              name: 'Eagle Row @ Few Hall/Evans Hall',
-              types: ['B', 'C', 'Loop'],
-              coords: {lat: 33.794865582021494, lng: -84.32490286458182},
-            },
-            {
-              name: 'Eagle Row @ Raoul Hall',
-              types: ['B', 'Loop'],
-              coords: {lat: 33.79513460781988, lng: -84.32340171795491}, //edit database bc Eagle Row @ Raoul and @ The Depot are the same
-            },
-            {
-              name: 'Starvine Way @ Dooley Drive',
-              types: ['A', 'D', 'C-TocoHills'],
-              coords: {lat: 33.79818, lng: -84.30784},
-            },
-        ];
-        
-        var filterHub = [
-            {
-                name: 'Alloy Holiday Party',
-                location: `Student Activity and Academic Center`,
-                url: "hello",
-                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
-                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
-                club: "The Emory Wheel"
-            },
-            {
-                name: 'Alloy Holiday Party',
-                location: `WoodPEC Rm 304`,
-                url: "hello",
-                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
-                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
-                club: "The Emory Wheel"
-            },
-            {
-                name: 'Alloy Holiday Party',
-                location: `Woodruff Library`,
-                url: "hello",
-                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
-                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
-                club: "The Emory Wheel"
-            },
-            {
-                name: 'Alloy Holiday Party',
-                location: `testing for errors`,
-                url: "hello",
-                map_url: 'https://www.google.com/maps/place/Cox+Hall/@33.7923689,-84.3234661,21z/data=!4m12!1m6!3m5!1s0x88f506f07d043323:0x51a2aaed1c1f3575!2sCox+Hall!8m2!3d33.7922835!4d-84.3233316!3m4!1s0x88f506f07d043323:0x51a2aaed1c1f3575!8m2!3d33.7922835!4d-84.3233316',
-                date: "Friday, December 2 at 2:47PM EST to Friday, December 2 at 10:30PM EST",
-                club: "The Emory Wheel"
-            }
-        ];
-
+              
         function addMarker(props, iconLink, markerContent, markerName) {
             var marker = new google.maps.Marker({
                 position: props.coords,
@@ -673,46 +637,6 @@
             });
             */
 
-        practiceRoute = [
-            {
-                name: 'Woodruff Physical Education Center',
-                coords: [
-                    {
-                        lat: 33.79347720574329,
-                        lng: -84.32667216271575
-                    },
-                    {
-                        lat: 33.793283,
-                        lng: -84.325106
-                    }
-                ]
-            },
-            {
-                name: 'Callaway Memorial Center',
-                coords: [
-                    {
-                        lat: 33.79115871434023,
-                        lng: -84.32413239696604
-                    },
-                    {
-                        lat: 33.79143900561269,
-                        lng: -84.32394857183496
-                    },
-                    {
-                        lat: 33.79175782290775,
-                        lng: -84.32434165763024
-                    },
-                    {
-                        lat: 33.79134987566006,
-                        lng: -84.32436966533899
-                    },
-                    {
-                        lat: 33.791668,
-                        lng: -84.324293
-                    }
-                ]
-            }
-        ];
              // add event listeners for the buttons
             document.getElementById("show-markers").addEventListener("click", function() {showMarkers(markers);});
             document.getElementById("hide-markers").addEventListener("click", function() {hideMarkers(markers);});
@@ -872,6 +796,9 @@
                         index = shuttle.length;
                     }
                     else {
+                        console.log(shuttle.substring(index, shuttle.indexOf(' ', index)));
+                        //console.log(index);
+                        //console.log(shuttle.indexOf(' ', index));
                     if (document.getElementById(shuttle.substring(index, shuttle.indexOf(' ', index))).checked == true) { //problem here
                         index = shuttle.length;
                         var shuttleString = pinned[i].markerContent;
@@ -965,19 +892,25 @@
         }
 
         function getCurrentAddress(position) {
+            directionsStart = currentGeometry;
+            /*
             axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
 
             .then(function(response) {
+                console.log(response);
                 
-            if (response.data.results.length == 0) { //fix this to make it calculate haversines
+            if (response.data.results.length == 0) {
                 directionsStart = currentGeometry; 
             }
             else{
                 directionsStart = response.data.results[0].formatted_address;
             }
+
+            console.log(directionsStart);
             })
 
             .catch(function(error) {console.log(error);})
+            */
         }
 
         /*function getCurrentGeometry(position) {
@@ -1234,10 +1167,10 @@
     }*/
 
     function applyFilter(filter) {
-        getData().then(function(filterPlaces){
-            console.log(filterPlaces);
+        getData().then(function(response){
 
-        deleteMarkers(markers);
+            filterPlaces = response[0];
+
         for (let i = 0; i < filterPlaces.length; i++) {
             if (filter == 'microwave' && filterPlaces[i].microwave == true) {
                 addMarker({
@@ -1347,26 +1280,24 @@
     })
     }
 
-    function applyEventsFilter() { //still need to account if multiple clubs involved... also if events_added = 0 put out an alert?
+    function applyEventsFilter() { //if events_added = 0 put out an alert?
         deleteMarkers(markers);
-        //@TODO: add database in here and call it 'filterHub'
+        getData().then(function(response){
+            filterHub = response[3];
         for (let i = 0; i < filterHub.length; i++) {
+            console.log(hasEventEnded(filterHub[i]));
             if (hasEventEnded(filterHub[i]) == false) {
                 geocoder.geocode( { 'address': filterHub[i].location}, function(results, status) {
                     if (status == 'OK') {
                         console.log(results);
-                        //var mapUrl = filterHub[i].map_url;
-                        //var commaIndex = mapUrl.indexOf(',');
                         var latitude = results[0].geometry.location.lat();
                         var longitude = results[0].geometry.location.lng();
-                        //var latitude = parseFloat(mapUrl.substring(mapUrl.indexOf('@') + 1, commaIndex));
-                        //var longitude = parseFloat(mapUrl.substring(commaIndex + 1, mapUrl.indexOf(',', commaIndex + 1)));
                         addMarker({
                             coords: {
                                 lat: latitude,
                                 lng: longitude
                             },
-                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br><a href = ${filterHub[i].url}>View on The Hub</a><br>`
+                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
                             }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png'); 
                     } else {
                         var newLocation = checkEdgeCases(filterHub[i].location);
@@ -1381,7 +1312,7 @@
                                         lat: latitude,
                                         lng: longitude
                                         },
-                                    content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br><a href = ${filterHub[i].url}>View on The Hub</a><br>`
+                                    content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
                                 }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png');
                             }
                             });
@@ -1392,10 +1323,16 @@
         }
         map.setCenter(currentGeometry);
         map.setZoom(15);
+    });
     }
 
     function applyShuttleFilter(shuttle) {
         //@TODO: insert shuttle data here as 'shuttleStops'
+        getData().then(function(response){
+            shuttleStops = response[2];
+            console.log(isShuttleRunning(shuttle));
+        if (isShuttleRunning(shuttle)) {
+
         for (let i = 0; i < shuttleStops.length; i++) {
             let j = 0;
             while (j < shuttleStops[i].types.length && shuttle != shuttleStops[i].types[j]) {
@@ -1409,7 +1346,7 @@
                 if (pinned.length == 0) {
                     addMarker({
                     coords: shuttleStops[i].coords,
-                    content: `<b><font size='3'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}`
+                    content: `<b><font size='3'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}<br><a href = https://transportation.emory.edu/shuttles target="_blank" all Routes</a><br>`
                 }, 'https://maps.google.com/mapfiles/ms/micons/bus.png', shuttleString, shuttleStops[i].name);
                 pinned.push(markers[markers.length - 1]);
 
@@ -1426,13 +1363,15 @@
             if (!included) {
                 addMarker({
                     coords: shuttleStops[i].coords,
-                    content: `<b><font size='3'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}`
+                    content: `<b><font size='3'>${shuttleStops[i].name}</font></b><br> <b>Shuttles:</b> ${shuttleString}<br><a href = https://transportation.emory.edu/shuttles target="_blank">View all Routes</a><br>`
                 }, 'https://maps.google.com/mapfiles/ms/micons/bus.png', shuttleString, shuttleStops[i].name);
                 pinned.push(markers[markers.length - 1]);
             }
             }
         }
         }
+    }
+    });
     }
 
     function calculateDistance(start, end) {
@@ -1455,8 +1394,14 @@
     }
 
     function findAllDistances(value) { //still a work in progress but testing
+        getData().then(function(response){
+        
+        practiceRoute = response[1];
+
         distances = []; //add new data here!!!!
         let i = 0;
+        var realName = checkEdgeCases(value);
+        if (realName != 'NO MATCH') {value = realName;} //if an edge case, set name to the real name
         while (i < practiceRoute.length && practiceRoute[i].name != value) {
             i++;
         }
@@ -1468,6 +1413,7 @@
         else {
             directionsEnd = '';
         }
+    });
     }
 
     function compareDistances(value) {
@@ -1555,28 +1501,37 @@
         var current = new Date();
 
         var parseStartDate = hubEvent.date.substring(0, hubEvent.date.indexOf(' at'));
-        var parseStartTime = hubEvent.date.substring(hubEvent.date.indexOf('at ') + 3, hubEvent.date.indexOf(' to'));
-        var parseEndDate = hubEvent.date.substring(hubEvent.date.indexOf(' to ') + 4, hubEvent.date.indexOf(' at', hubEvent.date.indexOf(' to ')));
-        var parseEndTime = hubEvent.date.substring(hubEvent.date.indexOf(' at ', hubEvent.date.indexOf(' to ')) + 4);
+        var parseStartTime = hubEvent.date.substring(hubEvent.date.indexOf('at ') + 3, hubEvent.date.indexOf(' ', hubEvent.date.indexOf('at ') + 3));
+        
+        var date = parseStartDate.substring(parseStartDate.indexOf(' ') + 1);
+        var month = date.substring(0, date.indexOf(' '));
+        var day = parseInt(date.substring(date.indexOf(' ') + 1));
 
-        if (parseEndTime.indexOf('PM') != -1) {
-            var hours = parseInt(parseEndTime.substring(0, parseEndTime.indexOf(':'))) + 12;
+        if (current.getMonth() == month && current.getDate() == day) {
+
+        if (parseStartTime.indexOf('PM') != -1) {
+            var hours = parseInt(parseStartTime.substring(0, parseStartTime.indexOf(':'))) + 12;
+            if (hours == 24) {hours = 12};
+            var minutes = parseInt(parseStartTime.substring(parseStartTime.indexOf(':') + 1, parseStartTime.indexOf('PM')));
         }
         else {
-            var hours = parseInt(parseEndTime.substring(0, parseEndTime.indexOf(':')));
+            var hours = parseInt(parseStartTime.substring(0, parseStartTime.indexOf(':')));
             if (hours == 12) {hours = 0};
+            var minutes = parseInt(parseStartTime.substring(parseStartTime.indexOf(':') + 1, parseStartTime.indexOf('AM')));
         }
-        //var hoursString = hours.toString();
-        var minutes = parseEndTime.substring(parseEndTime.indexOf(':') + 1, parseEndTime.indexOf('PM'));
-        if (current.getUTCHours() - 5 < hours) {
+
+        var estHours = convertHours(current.getUTCHours());
+        if (estHours < hours + 2) {
             console.log('this event has not ended yet'); //so add marker
             return false;
         }
-        else if (current.getUTCHours() - 5 == hours && current.getUTCMinutes() < minutes) {
+        else if (estHours == hours + 2 && current.getUTCMinutes() < minutes) {
             console.log('this event has still not ended yet'); //so add marker
             return false;
         }
         else {return true;}
+    }
+        return true;
     }
 
     function setCurrentGeometry() {
@@ -1617,9 +1572,89 @@
         var content = `<b><font size='3'>${building.name}</font></b><br>`;
         if (building.rest_name) {content += `${building.rest_name}<br>`;}
         if (building.hours) {content += `${building.hours}<br>`;}
-        if (building.link) {content += `<a href = ${building.link}>Website</a>`;}
+        if (building.link) {content += `<a href = ${building.link} target="_blank">Website</a>`;}
         return content;
     }
+
+    function formatEventMarkerContent(event) {
+        var content = `<b><font size='3'>${event.name}</font></b><br>`;
+        if (event.location) {content += `${event.location}<br>`;}
+        if (event.date) {content += `${event.date}<br>`;}
+        return content;
+    }
+
+    function convertHours(hours) {
+        if (hours >= 0 && hours < 5) {
+            return hours + 19;
+        }
+        else {
+            return hours - 5;
+        }
+    }
+
+    function isShuttleRunning(shuttle) {
+        var current = new Date();
+        var currentDay = current.getDay();
+        var currentHours = convertHours(current.getUTCHours());
+        var currentMinutes = current.getUTCMinutes();
+        if (shuttle == 'A' && (currentDay != 0 && currentDay != 6) && (currentHours >= 7 && currentHours <= 20)) {
+            return true;
+        }
+        else if (shuttle == 'B' && (currentDay != 0 && currentDay != 6) && (currentHours > 7 && currentMinutes >= 15) && (currentHours <= 19 && currentMinutes <= 5)) {
+            return true;
+        }
+        else if (shuttle == 'C' && (currentDay != 0 && currentDay != 6) && currentHours >= 5) {
+            return true;
+        }
+        else if (shuttle == 'D' && (currentDay != 0 && currentDay != 6) && (currentHours >= 5 && currentHours <= 16)) {
+            if (currentMinutes <= 30) {
+                return true;
+            }
+        }
+        else if (shuttle == 'E' && (currentDay != 0 && currentDay != 6) && (currentHours >= 5 && currentHours <= 21)) {
+            if (currentMinutes <= 30) {
+                return true;
+            }
+        }
+        else if (shuttle == 'M' && (currentDay != 0 && currentDay != 6) && (currentHours >= 5 && currentHours <= 21)) {
+            return true;
+        }
+        else if (shuttle == 'Loop' && (currentDay != 0 && currentDay != 6) && (currentHours >= 7 && currentHours <= 23)) {
+            return true;
+        }
+        else if (shuttle == 'NPRC' && (currentDay != 0 && currentDay != 6) && (currentHours >= 6 && currentMinutes >= 50) && (currentHours <= 17 && currentMinutes <= 50)) {
+            return true;
+        }
+        else if (shuttle == 'DX' && (currentDay != 0 && currentDay != 6) && (currentHours >= 15 && currentMinutes >= 30) && currentHours <= 21) {
+            return true;
+        }
+        else if (shuttle == 'BX' && (currentDay != 0 && currentDay != 6) && (currentHours >= 7 && currentMinutes >= 15) && (currentHours <= 22 && currentMinutes <= 25)) {
+            return true;
+        }
+        else if (shuttle == 'C-Publix' && (currentDay != 0 && currentDay != 6) && (currentHours >= 18 && currentHours <= 21)) {
+            return true;
+        }
+        else if (shuttle == 'C-TocoHills' && (currentDay == 0 || currentDay == 6) && (currentHours >= 9 && currentHours <= 23)) {
+            return true;
+        }
+        else return false;
+    }
+
+    function convertMonth(month) {
+        if (month == 'January') {return 0;}
+        else if (month == 'February') {return 1;}
+        else if (month == 'March') {return 2;}
+        else if (month == 'April') {return 3;}
+        else if (month == 'May') {return 4;}
+        else if (month == 'June') {return 5;}
+        else if (month == 'July') {return 6;}
+        else if (month == 'August') {return 7;}
+        else if (month == 'September') {return 8;}
+        else if (month == 'October') {return 9;}
+        else if (month == 'November') {return 10;}
+        else if (month == 'December') {return 11;}
+    }
+    
 
     /*function geocode(hubEventLocation) {
 
