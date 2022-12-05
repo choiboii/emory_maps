@@ -27,6 +27,7 @@ const a = [];
 const Buildings = mongoose.model('Hello', userSchema, 'buildings');
 const Entrances = mongoose.model('Hi', userSchema, 'entrances');
 const ShuttleStops = mongoose.model('Hey', userSchema, 'shuttle-stops');
+const Events = mongoose.model('Wassup', userSchema, 'events');
 //const Entrances = mongoose.model('test', userSchema);
 //const ShuttleStops = mongoose.model('test', userSchema);
 
@@ -52,6 +53,14 @@ app.get('/', (req, res) => {
     ShuttleStops.find({}, (err, found) => {
         if (!err) {
             a[2] = found;
+        } else {
+            console.log(err);
+            res.send("Some error occured!")
+        }
+    }).clone().catch(err => console.log("Error occured, " + err));
+    Events.find({}, (err, found) => {
+        if (!err) {
+            a[3] = found;
             console.log(a);
             res.send(a);
         } else {
