@@ -1297,7 +1297,7 @@
                                 lat: latitude,
                                 lng: longitude
                             },
-                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
+                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
                             }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png'); 
                     } else {
                         var newLocation = checkEdgeCases(filterHub[i].location);
@@ -1504,7 +1504,7 @@
         var parseStartTime = hubEvent.date.substring(hubEvent.date.indexOf('at ') + 3, hubEvent.date.indexOf(' ', hubEvent.date.indexOf('at ') + 3));
         
         var date = parseStartDate.substring(parseStartDate.indexOf(' ') + 1);
-        var month = date.substring(0, date.indexOf(' '));
+        var month = convertMonth(date.substring(0, date.indexOf(' ')));
         var day = parseInt(date.substring(date.indexOf(' ') + 1));
 
         if (current.getMonth() == month && current.getDate() == day) {
@@ -1522,11 +1522,9 @@
 
         var estHours = convertHours(current.getUTCHours());
         if (estHours < hours + 2) {
-            console.log('this event has not ended yet'); //so add marker
             return false;
         }
         else if (estHours == hours + 2 && current.getUTCMinutes() < minutes) {
-            console.log('this event has still not ended yet'); //so add marker
             return false;
         }
         else {return true;}
@@ -1637,7 +1635,9 @@
         else if (shuttle == 'C-TocoHills' && (currentDay == 0 || currentDay == 6) && (currentHours >= 9 && currentHours <= 23)) {
             return true;
         }
-        else return false;
+        else {
+            return false;
+        }
     }
 
     function convertMonth(month) {
