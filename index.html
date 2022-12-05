@@ -12,60 +12,6 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <style>
-        
-/* .footer{
-	background:#222222;
-	padding:30px 30px;
-	font-family: 'Play', sans-serif;
-	text-align:center;
-	}
-	
-	.footer .row{
-	width:100%;
-	margin:1% 0%;
-	padding:0.6% 0%;
-	color:gray;
-	font-size:0.8em;
-	}
-	
-	.footer .row a{
-	text-decoration:none;
-	color:gray;
-	transition:0.5s;
-	}
-	
-	.footer .row a:hover{
-	color:#fff;
-	}
-	
-	.footer .row ul{
-	width:100%;
-	}
-	
-	.footer .row ul li{
-	display:inline-block;
-	margin:0px 30px;
-	}
-	
-	.footer .row a i{
-	font-size:2em;
-	margin:0% 1%;
-	}
-	
-	@media (max-width:720px){
-	.footer{
-	text-align:left;
-	padding:5%;
-	}
-	.footer .row ul li{
-	display:block;
-	margin:10px 0px;
-	text-align:left;
-	}
-	.footer .row a i{
-	margin:0% 3%;
-	}
-	} */
         #map {
             flex-basis: 0;
             flex-grow: 4;
@@ -503,45 +449,7 @@
         <iframe src="" frameborder="0"></iframe>
     </div>
     <div class="clearfix"></div>
-    <!-- <footer>
-        <div class="footer">
-            <div class="row">
-                <a href="#">
-                    <i class="fa fa-facebook"></i>
-                </a>
-                <a href="#">
-                    <i class="fa fa-instagram"></i>
-                </a>
-                <a href="#">
-                    <i class="fa fa-youtube"></i>
-                </a>
-                <a href="#">
-                    <i class="fa fa-twitter"></i>
-                </a>
-            </div>
-
-            <div class="row">
-                <ul>
-                    <li>
-                        <a href="https://github.com/choiboii/emory_maps">Contact us</a>
-                    </li>
-                    <li>
-                        <a href="https://cloud.google.com/maps-platform/terms">Terms & Conditions</a>
-                    </li>
-                    <li>
-                        <a href="https://www.emory.edu/home/index.html">Career</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="row">
-                Eagle Maps Copyright © 2022 - All rights reserved ||
-                Designed By: Dijkstra's Disciples
-            </div>
-        </div>
-    </footer> -->
     <script>
-        //data fetching function
         async function getData(url='https://emory-maps-backend.herokuapp.com'){
             const response = await fetch(url);
             const data = response.json();
@@ -721,14 +629,6 @@
             map = new google.maps.Map(document.getElementById('map'), options);
             setCurrentGeometry();
 
-            //listen for click on map
-            /*google.maps.event.addListener(map, 'click', 
-                function(event) {
-                    addMarker({coords:event.latLng}, 'https://maps.google.com/mapfiles/ms/micons/red-dot.png');
-            });
-            */
-
-             // add event listeners for the buttons
             document.getElementById("show-markers").addEventListener("click", function() {showMarkers(markers);});
             document.getElementById("hide-markers").addEventListener("click", function() {hideMarkers(markers);});
             document.getElementById("delete-markers").addEventListener("click", function () {deleteMarkers(markers);});
@@ -813,27 +713,6 @@
                 map,
                 globalMode
             );
-            /*
-
-            function onChangeHandler() {
-                calculateAndDisplayRoute(
-                    directionsRenderer,
-                    directionsService,
-                    markerArray,
-                    stepDisplay,
-                    map
-                );
-            };
-
-            (start).addEventListener(
-                "change",
-                onChangeHandler
-            );
-            (document.getElementById("end")).addEventListener(
-                "change",
-                onChangeHandler
-            );
-            */
         }
 
         var locationForm = document.getElementById('location-form');
@@ -887,9 +766,7 @@
                         index = shuttle.length;
                     }
                     else {
-                        console.log(shuttle.substring(index, shuttle.indexOf(' ', index)));
-                        //console.log(index);
-                        //console.log(shuttle.indexOf(' ', index));
+    
                     if (document.getElementById(shuttle.substring(index, shuttle.indexOf(' ', index))).checked == true) { //problem here
                         index = shuttle.length;
                         var shuttleString = pinned[i].markerContent;
@@ -911,8 +788,6 @@
             }
             pinned = auxPinned;
         }
-        map.setCenter(currentGeometry);
-        map.setZoom(15);
     }
 
         // Close the dropdown menu if the user clicks outside of it
@@ -1226,37 +1101,6 @@
         calculateAndDisplayRoute(elevationDirectionsRenderer, directionsService, markerArray, stepDisplay, map, mode);
     }
 
-    /*function applyFilter2(filter) {
-        deleteMarkers(markers);
-        for (let i = 0; i < filterPlaces.length; i++) {
-            let types = filterPlaces[i].types;
-            let j = 0;
-            while (j < types.length && filter != types[j]) {
-                j++;
-            }
-            if (j < types.length) {
-                if (filter == 'food' || filter == 'coffee' || filter == 'meal-swipes' || filter == 'vegan' || filter == 'vegetarian') {
-                    addMarker({
-                        coords: filterPlaces[i].coords,
-                        content: `<b><font size='3'>${filterPlaces[i].name}</font></b><br> <b>Hours:</b> ${filterPlaces[i].hours}<br> <a href = ${filterPlaces[i].link}>Menu</a>`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/orange-dot.png'); 
-                }
-                else if (filter == 'study' || filter == 'library' || filter == 'printer' || filter == 'private-study' || filter == 'whiteboard') {
-                    addMarker({
-                        coords: filterPlaces[i].coords,
-                        content: `<b><font size='3'>${filterPlaces[i].name}</font></b><br> <b>Hours:</b> ${filterPlaces[i].hours}<br> <a href = ${filterPlaces[i].link}>Website</a>`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/purple-dot.png'); 
-                }
-                else if (filter == 'building' || filter == 'academic' || filter == 'id' || filter == 'dorm') {
-                    addMarker({
-                        coords: filterPlaces[i].coords,
-                        content: `<b><font size='3'>${filterPlaces[i].name}</font></b><br> <b>Hours:</b> ${filterPlaces[i].hours}<br> <a href = ${filterPlaces[i].link}>Website</a>`
-                    }, 'https://maps.google.com/mapfiles/ms/micons/blue-dot.png'); 
-                }
-            }
-        }
-    }*/
-
     function applyFilter(filter) {
         getData().then(function(response){
 
@@ -1376,11 +1220,9 @@
         getData().then(function(response){
             filterHub = response[3];
         for (let i = 0; i < filterHub.length; i++) {
-            console.log(hasEventEnded(filterHub[i]));
             if (hasEventEnded(filterHub[i]) == false) {
                 geocoder.geocode( { 'address': filterHub[i].location}, function(results, status) {
                     if (status == 'OK') {
-                        console.log(results);
                         var latitude = results[0].geometry.location.lat();
                         var longitude = results[0].geometry.location.lng();
                         addMarker({
@@ -1388,7 +1230,7 @@
                                 lat: latitude,
                                 lng: longitude
                             },
-                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
+                            content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
                             }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png'); 
                     } else {
                         var newLocation = checkEdgeCases(filterHub[i].location);
@@ -1403,7 +1245,7 @@
                                         lat: latitude,
                                         lng: longitude
                                         },
-                                    content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>Who:</b> Insert club name<br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
+                                    content: `<b><font size='3'>${filterHub[i].name}</font></b><br> <b>When:</b> ${filterHub[i].date}<br> <b>Where:</b> ${filterHub[i].location}<br>`
                                 }, 'https://maps.google.com/mapfiles/ms/micons/green-dot.png');
                             }
                             });
@@ -1412,6 +1254,7 @@
                 });
             }
         }
+        //if (markers.length == 0) {alert("There are no events happening today!")}
         map.setCenter(currentGeometry);
         map.setZoom(15);
     });
@@ -1421,8 +1264,9 @@
         //@TODO: insert shuttle data here as 'shuttleStops'
         getData().then(function(response){
             shuttleStops = response[2];
-            console.log(isShuttleRunning(shuttle));
         if (isShuttleRunning(shuttle)) {
+            map.setCenter(currentGeometry);
+            map.setZoom(15);
 
         for (let i = 0; i < shuttleStops.length; i++) {
             let j = 0;
@@ -1595,7 +1439,7 @@
         var parseStartTime = hubEvent.date.substring(hubEvent.date.indexOf('at ') + 3, hubEvent.date.indexOf(' ', hubEvent.date.indexOf('at ') + 3));
         
         var date = parseStartDate.substring(parseStartDate.indexOf(' ') + 1);
-        var month = date.substring(0, date.indexOf(' '));
+        var month = convertMonth(date.substring(0, date.indexOf(' ')));
         var day = parseInt(date.substring(date.indexOf(' ') + 1));
 
         if (current.getMonth() == month && current.getDate() == day) {
@@ -1613,11 +1457,9 @@
 
         var estHours = convertHours(current.getUTCHours());
         if (estHours < hours + 2) {
-            console.log('this event has not ended yet'); //so add marker
             return false;
         }
         else if (estHours == hours + 2 && current.getUTCMinutes() < minutes) {
-            console.log('this event has still not ended yet'); //so add marker
             return false;
         }
         else {return true;}
@@ -1688,24 +1530,31 @@
         var currentDay = current.getDay();
         var currentHours = convertHours(current.getUTCHours());
         var currentMinutes = current.getUTCMinutes();
+
         if (shuttle == 'A' && (currentDay != 0 && currentDay != 6) && (currentHours >= 7 && currentHours <= 20)) {
             return true;
         }
-        else if (shuttle == 'B' && (currentDay != 0 && currentDay != 6) && (currentHours > 7 && currentMinutes >= 15) && (currentHours <= 19 && currentMinutes <= 5)) {
-            return true;
+        else if (shuttle == 'B' && (currentDay != 0 && currentDay != 6) && (currentHours > 7 && currentHours <= 19)) {
+            if (currentHours == 7 || currentHours == 19) {
+                if (currentHours == 7 && currentMinutes >= 15) {return true;}
+                else if (currentHours == 19 && currentMinutes <= 5) {return true;}
+            }
+            else {return true;}
         }
         else if (shuttle == 'C' && (currentDay != 0 && currentDay != 6) && currentHours >= 5) {
             return true;
         }
         else if (shuttle == 'D' && (currentDay != 0 && currentDay != 6) && (currentHours >= 5 && currentHours <= 16)) {
-            if (currentMinutes <= 30) {
-                return true;
+            if (currentHours == 16) {
+                if (currentMinutes <= 30) {return true;}
             }
+            else {return true;}
         }
         else if (shuttle == 'E' && (currentDay != 0 && currentDay != 6) && (currentHours >= 5 && currentHours <= 21)) {
-            if (currentMinutes <= 30) {
+            if (currentHours == 21 && currentMinutes <= 30) {
                 return true;
             }
+            else {return true;}
         }
         else if (shuttle == 'M' && (currentDay != 0 && currentDay != 6) && (currentHours >= 5 && currentHours <= 21)) {
             return true;
@@ -1713,14 +1562,25 @@
         else if (shuttle == 'Loop' && (currentDay != 0 && currentDay != 6) && (currentHours >= 7 && currentHours <= 23)) {
             return true;
         }
-        else if (shuttle == 'NPRC' && (currentDay != 0 && currentDay != 6) && (currentHours >= 6 && currentMinutes >= 50) && (currentHours <= 17 && currentMinutes <= 50)) {
-            return true;
+        else if (shuttle == 'NPRC' && (currentDay != 0 && currentDay != 6) && (currentHours >= 6 && currentHours <= 17)) {
+            if (currentHours == 6 || currentHours == 17) {
+                if (currentHours == 6 && currentMinutes >= 50) {return true;}
+                else if (currentHours == 17 && currentMinutes <= 50) {return true;}
+            }
+            else {return true};
         }
         else if (shuttle == 'DX' && (currentDay != 0 && currentDay != 6) && (currentHours >= 15 && currentMinutes >= 30) && currentHours <= 21) {
-            return true;
+            if (currentHours == 15) {
+                if (currentMinutes >= 30) {return true;}
+            }
+            else {return true};
         }
         else if (shuttle == 'BX' && (currentDay != 0 && currentDay != 6) && (currentHours >= 7 && currentMinutes >= 15) && (currentHours <= 22 && currentMinutes <= 25)) {
-            return true;
+            if (currentHours == 7 || currentHours == 22) {
+                if (currentHours == 7 && currentMinutes >= 15) {return true;}
+                else if (currentHours == 22 && currentMinutes <= 25) {return true;}
+            }
+            else {return true};
         }
         else if (shuttle == 'C-Publix' && (currentDay != 0 && currentDay != 6) && (currentHours >= 18 && currentHours <= 21)) {
             return true;
@@ -1728,7 +1588,10 @@
         else if (shuttle == 'C-TocoHills' && (currentDay == 0 || currentDay == 6) && (currentHours >= 9 && currentHours <= 23)) {
             return true;
         }
-        else return false;
+        else {
+            alert("The " + shuttle + ' shuttle is not currently running.');
+            return false;
+        }
     }
 
     function convertMonth(month) {
@@ -1745,44 +1608,6 @@
         else if (month == 'November') {return 10;}
         else if (month == 'December') {return 11;}
     }
-    
-
-    /*function geocode(hubEventLocation) {
-
-        hubEventLocation = replaceSpaces(hubEventLocation);
-
-        var location = '1518%20Clifton%20Rd%20Atlanta%20GA%2030322%20USA'
-
-        var location2 = '1518%20Clifton%20Rd%20Atlanta%20GA';
-        var alt = '24%20Sussex%20Drive%20Ottawa%20ON';
-
-        //`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`
-
-        axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
-            params: {
-                address: location,
-                key: "AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So",
-                location_type: 'ROOFTOP'
-            }
-        })
-        .then(function(response) {
-            console.log(response);
-            var formattedAddress = response.data.results[0].formatted_address;
-            var addressComponents = response.data.results[0].address_components;
-            var lat = response.data.results[0].geometry.location.lat.toFixed(4);
-            var lng = response.data.results[0].geometry.location.lng.toFixed(4);
-        })
-        .catch(function(error){
-            console.log(error);
-        })
-
-        axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=33.7975,-84.3234&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCsklehWRTLY54gug20dY1zByw0JosG-So`)
-
-            .then(function(response) {
-                //console.log(response);
-            });
-
-    }*/
     
     </script>
     <script
