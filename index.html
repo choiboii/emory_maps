@@ -1103,6 +1103,7 @@
 
     function applyFilter(filter) {
         getData().then(function(response){
+            deleteMarkers(markers);
 
             filterPlaces = response[0];
 
